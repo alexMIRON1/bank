@@ -1,0 +1,13 @@
+<Context>
+
+    <!-- MySQL -->
+    <Resource name="jdbc/mysql/bank"
+              auth="Container"
+              type="javax.sql.DataSource"
+              username="root" password="root"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              defaultAutoCommit="true"
+              defaultTransactionIsolation="READ_COMMITTED"
+              url="jdbc:mysql://localhost:3306/bank"/>
+
+</Context>
