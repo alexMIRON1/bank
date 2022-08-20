@@ -1,13 +1,8 @@
 package com.bank.controller.command.impl;
 
 import com.bank.controller.command.Command;
-import com.bank.controller.service.RegisterService;
-import com.bank.model.dao.ClientDao;
-import com.bank.model.dao.impl.DaoEnum;
-import com.bank.model.dao.impl.FactoryDao;
+import com.bank.controller.service.AuthorizedService;
 import com.bank.model.entity.Client;
-import com.bank.model.entity.ClientStatus;
-import com.bank.model.entity.Role;
 import com.bank.model.exception.client.CreateClientException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -16,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class RegisterCommand implements Command {
-    private final static Logger LOG = LogManager.getLogger(RegisterCommand.class);
-    private final RegisterService registerService;
+    private static final Logger LOG = LogManager.getLogger(RegisterCommand.class);
+    private final AuthorizedService authorizedService;
 
-    public RegisterCommand(RegisterService registerService) {
-        this.registerService = registerService;
+    public RegisterCommand(AuthorizedService authorizedService) {
+        this.authorizedService = authorizedService;
     }
 
     @Override
@@ -33,7 +28,7 @@ public class RegisterCommand implements Command {
 
         try {
             Client client = new Client();
-            registerService.create(client,login,password,passwordConfirm);
+            authorizedService.create(client,login,password,passwordConfirm);
             LOG.info( login + " successfully creates");
             request.getSession().setAttribute("client", client);
             return "redirect:/bank/login";

@@ -7,7 +7,6 @@ import com.bank.model.entity.CardStatus;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 
-import java.sql.SQLException;
 
 public class UnblockServiceImpl implements UnblockService {
     private final CardDao cardDao;
@@ -18,6 +17,9 @@ public class UnblockServiceImpl implements UnblockService {
 
     @Override
     public Card read(Integer id) throws ReadCardException{
+        if(id == 0){
+            throw  new ReadCardException();
+        }
         return cardDao.read(id);
     }
 

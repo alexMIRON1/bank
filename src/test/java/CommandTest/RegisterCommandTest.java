@@ -1,7 +1,7 @@
 package CommandTest;
 
 import com.bank.controller.command.impl.RegisterCommand;
-import com.bank.controller.service.RegisterService;
+import com.bank.controller.service.AuthorizedService;
 import com.bank.model.entity.Client;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,7 +23,7 @@ public class RegisterCommandTest {
     @Mock
     private HttpServletRequest request;
     @Mock
-    private RegisterService registerService;
+    private AuthorizedService authorizedService;
     private static final Map<String, String[]> params = new HashMap<>();
     @Mock
     private HttpSession session;
@@ -41,7 +41,7 @@ public class RegisterCommandTest {
     }
     @Test
     public void testRegisterExecute(){
-        RegisterCommand registerCommand = new RegisterCommand(registerService);
+        RegisterCommand registerCommand = new RegisterCommand(authorizedService);
         String path = registerCommand.execute(request);
         assertEquals("redirect:/bank/login",path);
     }

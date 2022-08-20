@@ -1,14 +1,0 @@
-
-V
-java:S1128"9Remove this unused import 'com.bank.model.dao.ClientDao'.(‡Ñÿã8©¶««0
-Y
-java:S1128"<Remove this unused import 'com.bank.model.dao.impl.DaoEnum'.( Ì‚Û8ª¶««0
-\
-java:S1128"?Remove this unused import 'com.bank.model.dao.impl.FactoryDao'.(™ŞØƒ8«¶««0
-[
-java:S1128
-"9Remove this unused import 'com.bank.model.entity.Client'.(Áî—İûÿÿÿÿ8¹¶««0
-m
-java:S1128"PRemove this unused import 'com.bank.model.exception.client.ReadClientException'.(ë Æƒ8º¶««0
-O
-java:S1128"2Remove this unused import 'java.sql.SQLException'.(ÛïÆŸ8áÔ¬«0

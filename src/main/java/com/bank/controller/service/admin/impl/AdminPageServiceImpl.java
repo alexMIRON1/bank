@@ -9,8 +9,6 @@ import com.bank.model.entity.Card;
 import com.bank.model.entity.Client;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.client.ReadClientException;
-
-import java.sql.SQLException;
 import java.util.List;
 
 public class AdminPageServiceImpl implements AdminPageService {
@@ -34,6 +32,9 @@ public class AdminPageServiceImpl implements AdminPageService {
 
     @Override
     public Client fillClient(Integer id) throws ReadClientException {
+        if(id == 0){
+            throw new ReadClientException();
+        }
         ClientDao clientsDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
         return clientsDao.read(id);
     }

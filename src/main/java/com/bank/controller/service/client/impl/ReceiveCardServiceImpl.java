@@ -8,7 +8,6 @@ import com.bank.model.entity.Client;
 import com.bank.model.exception.card.CreateCardException;
 import com.bank.model.exception.card.ReadCardException;
 
-import java.sql.SQLException;
 
 public class ReceiveCardServiceImpl implements ReceiveCardService {
     private final CardDao cardDao;
@@ -19,6 +18,12 @@ public class ReceiveCardServiceImpl implements ReceiveCardService {
 
     @Override
     public void create(Card card, Client client) throws CreateCardException, ReadCardException{
+        if(card.getId()==0){
+            throw new ReadCardException();
+        }
+        if(client.getId() ==0){
+            throw new CreateCardException();
+        }
         card.setName(generateName());
         card.setCustomName("");
         card.setBalance(100);

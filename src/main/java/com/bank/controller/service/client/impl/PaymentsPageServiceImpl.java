@@ -13,20 +13,15 @@ import com.bank.model.entity.Page;
 import com.bank.model.exception.bill.ReadBillException;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.client.ReadClientException;
-import com.mysql.cj.log.Log;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PaymentsPageServiceImpl implements PaymentsPageService {
     private static final Logger LOG = LogManager.getLogger(PaymentsPageServiceImpl.class);
     private final CardDao cardDao;
     private final BillDao billDao;
-    private ClientDao clientDao;
 
     public PaymentsPageServiceImpl(CardDao cardDao, BillDao billDao) {
         this.cardDao = cardDao;
@@ -35,11 +30,17 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
 
     @Override
     public Card read(Integer id) throws ReadCardException{
+        if(id == 0){
+            throw new ReadCardException();
+        }
         return cardDao.read(id);
     }
 
     @Override
     public List<Bill> getSortedBills(String sort, Card card, Page page) throws ReadBillException{
+        if(card.getId() == 0){
+            throw new ReadBillException();
+        }
         int currentPage = page.getNumber();
         int records = page.getRecords();
         LOG.info("page = " + page);
@@ -70,12 +71,18 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
 
     @Override
     public Client fillClient(Integer id) throws ReadClientException {
-        clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
+        if(id==0){
+            throw new ReadClientException();
+        }
+        ClientDao clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
         return clientDao.read(id);
     }
 
     @Override
     public Card fillCard(Integer id) throws ReadCardException {
+        if(id == 0){
+            throw new ReadCardException();
+        }
         CardDao fillCardDao = (CardDao) FactoryDao.getInstance().getDao(DaoEnum.CARD_DAO);
         return  fillCardDao.read(id);
     }

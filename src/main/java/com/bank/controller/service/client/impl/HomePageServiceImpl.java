@@ -13,21 +13,20 @@ import com.bank.model.exception.client.ReadClientException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class HomePageServiceImpl implements  HomePageService {
     private final Logger LOG = LogManager.getLogger(HomePageServiceImpl.class);
     private final CardDao cardDao;
-    private ClientDao clientDao;
 
     public HomePageServiceImpl(CardDao cardDao) {
         this.cardDao = cardDao;
     }
     @Override
     public List<Card> sort(Client client, String sort, Page page) throws ReadCardException{
+        if(client.getId() == 0){
+            throw new ReadCardException();
+        }
         int currentPage = page.getNumber();
         int records = page.getRecords();
         LOG.info("page = " + page);
@@ -56,7 +55,10 @@ public class HomePageServiceImpl implements  HomePageService {
     }
     @Override
     public Client fillClient(Integer id) throws ReadClientException {
-        clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
+        if(id==0){
+            throw new ReadClientException();
+        }
+        ClientDao clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
         return clientDao.read(id);
     }
 }

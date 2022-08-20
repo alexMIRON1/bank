@@ -3,14 +3,9 @@ package com.bank.controller.command.impl;
 import com.bank.controller.command.Command;
 import com.bank.controller.command.exception.ClientBannedException;
 import com.bank.controller.command.exception.WrongPasswordException;
-import com.bank.controller.service.LoginService;
-import com.bank.model.dao.ClientDao;
-import com.bank.model.dao.impl.DaoEnum;
-import com.bank.model.dao.impl.FactoryDao;
+import com.bank.controller.service.AuthorizedService;
 import com.bank.model.entity.Client;
-import com.bank.model.entity.ClientStatus;
 import com.bank.model.exception.client.ReadClientException;
-import com.mysql.cj.log.Log;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -19,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class LoginCommand implements Command {
-    private final static Logger LOG = LogManager.getLogger(LoginCommand.class);
-    private final LoginService loginService;
+    private static final Logger LOG = LogManager.getLogger(LoginCommand.class);
+    private final AuthorizedService authorizedService;
 
-    public LoginCommand(LoginService loginService) {
-        this.loginService = loginService;
+    public LoginCommand(AuthorizedService authorizedService) {
+        this.authorizedService = authorizedService;
     }
 
     @Override
@@ -35,7 +30,7 @@ public class LoginCommand implements Command {
         String password = params.get("password")[0];
 
         try {
-            Client client = loginService.get(login,password);
+            Client client = authorizedService.get(login,password);
             request.getSession().setAttribute("client", client);
             LOG.info(login + " successfully entered");
             if(login.equals("admin")){

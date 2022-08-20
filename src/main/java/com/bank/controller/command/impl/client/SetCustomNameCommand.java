@@ -10,7 +10,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 
 public class SetCustomNameCommand implements Command {
     private final CardsService cardsService;
@@ -29,7 +28,7 @@ public class SetCustomNameCommand implements Command {
             String customName = request.getParameter("customName");
             cardsService.updateCustomName(card, customName);
             LOG.info("name was successfully set");
-            return "redirect:/bank/home?page=" + page.getNumber();
+            return "redirect:/bank/home?page=" + page.getNumber() + "&sort=" + page.getState();
         } catch (ReadCardException e) {
             LOG.debug("fail to set name because card does not exist");
             return "/error.jsp";

@@ -17,7 +17,6 @@ import com.bank.model.exception.card.UpdateCardException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class BillsServiceImpl implements BillsService {
@@ -32,6 +31,9 @@ public class BillsServiceImpl implements BillsService {
 
     @Override
     public Bill read(Integer id) throws ReadBillException {
+        if(id==null){
+            throw new ReadBillException();
+        }
         return billDao.read(id);
     }
 
@@ -41,12 +43,20 @@ public class BillsServiceImpl implements BillsService {
             LOG.debug("not enough money");
             throw new NotEnoughException();
         }
+        if(card.getId() == 0 || bill.getId() == 0){
+            LOG.debug("card or bill do not exist");
+            throw new UpdateCardException();
+        }
         card.setBalance(card.getBalance() - bill.getSum());
         cardDao.update(card);
     }
 
     @Override
     public void updateBill(Bill bill, Card card) throws UpdateBillException {
+        if(bill.getId() == 0 || card.getId() ==0){
+            LOG.debug("card or bill do not exist");
+            throw new UpdateBillException();
+        }
         bill.setBillStatus(BillStatus.PAID);
         bill.setCard(card);
         billDao.update(bill);
@@ -54,16 +64,27 @@ public class BillsServiceImpl implements BillsService {
 
     @Override
     public List<Bill> getBills(Card card) throws ReadBillException {
+        if(card.getId() == null || card.getId() ==0){
+            LOG.debug("card does not exist");
+            throw new ReadBillException();
+        }
         return billDao.getBills(card);
     }
 
     @Override
     public void delete(Integer id) throws DeleteBillException {
-         billDao.delete(id);
+        if(id == null || id == 0){
+            LOG.debug("bill does not exist");
+            throw new DeleteBillException();
+        }
+        billDao.delete(id);
     }
 
     @Override
     public Card fillCard(Integer id) throws ReadCardException {
+        if(id == 0){
+            throw  new ReadCardException();
+        }
         CardDao cardDao = (CardDao) FactoryDao.getInstance().getDao(DaoEnum.CARD_DAO);
         return cardDao.read(id);
     }

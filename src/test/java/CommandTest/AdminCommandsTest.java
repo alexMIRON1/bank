@@ -5,9 +5,8 @@ import com.bank.controller.command.impl.admin.LockCommand;
 import com.bank.controller.command.impl.admin.UnblockCommand;
 import com.bank.controller.command.impl.admin.UnlockCommand;
 import com.bank.controller.service.admin.AdminPageService;
-import com.bank.controller.service.admin.LockService;
+import com.bank.controller.service.admin.ControlUserService;
 import com.bank.controller.service.admin.UnblockService;
-import com.bank.controller.service.admin.UnlockService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +25,9 @@ public class AdminCommandsTest {
     @Mock
     private AdminPageService adminPageService;
     @Mock
-    private LockService lockService;
+    private ControlUserService controlUserService;
     @Mock
     private UnblockService unblockService;
-    @Mock
-    private UnlockService unlockService;
     @Before
     public void setUp(){
         Mockito.when(request.getParameter(Mockito.anyString())).thenReturn("1");
@@ -43,7 +40,7 @@ public class AdminCommandsTest {
     }
     @Test
     public void testLockExecute(){
-        LockCommand lockCommand = new LockCommand(lockService);
+        LockCommand lockCommand = new LockCommand(controlUserService);
         String path = lockCommand.execute(request);
         assertEquals("redirect:/bank/admin",path);
 
@@ -56,7 +53,7 @@ public class AdminCommandsTest {
     }
     @Test
     public void UnLockExecute(){
-        UnlockCommand unlockCommand = new UnlockCommand(unlockService);
+        UnlockCommand unlockCommand = new UnlockCommand(controlUserService);
         String path = unlockCommand.execute(request);
         assertEquals("redirect:/bank/admin",path);
     }

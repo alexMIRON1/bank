@@ -1,6 +1,6 @@
 package CommandTest;
 import com.bank.controller.command.impl.LoginCommand;
-import com.bank.controller.service.LoginService;
+import com.bank.controller.service.AuthorizedService;
 import com.bank.model.entity.Client;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,7 +21,7 @@ public class LoginCommandTest {
     @Mock
     private HttpServletRequest request;
     @Mock
-    private LoginService loginService;
+    private AuthorizedService authorizedService;
     private static final Map<String, String[]> params = new HashMap<>();
     @Mock
     private HttpSession session;
@@ -38,7 +38,7 @@ public class LoginCommandTest {
     }
     @Test
     public void testLoginExecute(){
-        LoginCommand loginCommand = new LoginCommand(loginService);
+        LoginCommand loginCommand = new LoginCommand(authorizedService);
         String path = loginCommand.execute(request);
         assertEquals("redirect:/bank/home",path);
     }

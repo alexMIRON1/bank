@@ -14,7 +14,7 @@ public class Bill {
     }
 
     public Bill(Integer id) {
-
+        this.id = id;
     }
 
     public Integer getId() {

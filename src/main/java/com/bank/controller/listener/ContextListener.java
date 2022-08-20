@@ -10,13 +10,11 @@ import com.bank.controller.command.impl.admin.UnlockCommand;
 import com.bank.controller.command.impl.client.*;
 import com.bank.controller.service.*;
 import com.bank.controller.service.admin.AdminPageService;
-import com.bank.controller.service.admin.LockService;
+import com.bank.controller.service.admin.ControlUserService;
 import com.bank.controller.service.admin.UnblockService;
-import com.bank.controller.service.admin.UnlockService;
 import com.bank.controller.service.admin.impl.AdminPageServiceImpl;
-import com.bank.controller.service.admin.impl.LockServiceImpl;
+import com.bank.controller.service.admin.impl.ControlUserServiceImpl;
 import com.bank.controller.service.admin.impl.UnblockServiceImpl;
-import com.bank.controller.service.admin.impl.UnlockServiceImpl;
 import com.bank.controller.service.client.*;
 import com.bank.controller.service.client.impl.*;
 import com.bank.controller.service.impl.*;
@@ -29,15 +27,11 @@ import com.bank.model.dao.impl.ClientDaoImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionListener;
-import javax.sql.DataSource;
 
 @WebListener
 public class ContextListener implements ServletContextListener, HttpSessionListener {
@@ -69,14 +63,13 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
         container.put("/error", new ErrorPageCommand());
         LOG.info("errorPage successfully put");
         //register
-        RegisterService registerService= new RegisterServiceImpl(clientDao);
+        AuthorizedService authorizedService = new AuthorizedServiceImpl(clientDao);
 
-        Command command = new RegisterCommand(registerService);
+        Command command = new RegisterCommand(authorizedService);
         container.put("/toRegister",command);
         LOG.info("registerCommand successfully put");
         //login
-        LoginService loginService = new LoginServiceImpl(clientDao);
-        command = new LoginCommand(loginService);
+        command = new LoginCommand(authorizedService);
         container.put("/toLogin",command);
         LOG.info("loginCommand successfully put");
         //blockCardClient
@@ -130,8 +123,8 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
         container.put("/admin",command);
         LOG.info("adminPageCommand successfully put");
         //lock
-        LockService lockService = new LockServiceImpl(clientDao);
-        command = new LockCommand(lockService);
+        ControlUserService controlUserService = new ControlUserServiceImpl(clientDao);
+        command = new LockCommand(controlUserService);
         container.put("/lock", command);
         LOG.info("lockCommand successfully put");
         //unblock
@@ -140,8 +133,7 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
         container.put("/unblock",command);
         LOG.info("unblockCommand successfully put");
         //unlock
-        UnlockService unlockService = new UnlockServiceImpl(clientDao);
-        command = new UnlockCommand(unlockService);
+        command = new UnlockCommand(controlUserService);
         container.put("/unlock", command);
         LOG.info("unlockCommand successfully put");
     }
