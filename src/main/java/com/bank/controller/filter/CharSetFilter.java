@@ -10,7 +10,7 @@ public class CharSetFilter implements Filter {
     private static final Logger LOG = LogManager.getLogger(CharSetFilter.class);
     private String encoding;
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig){
         encoding = filterConfig.getInitParameter("requestEncoding");
         if(encoding==null){
             encoding = "UTF-8";
@@ -27,6 +27,5 @@ public class CharSetFilter implements Filter {
         servletResponse.setContentType("text/html; charset=UTF-8");
         servletResponse.setCharacterEncoding("UTF-8");
         filterChain.doFilter(servletRequest,servletResponse);
-
     }
 }

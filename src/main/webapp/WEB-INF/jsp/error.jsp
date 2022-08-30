@@ -1,30 +1,24 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<l:setLocale/>
 <html>
 <head>
-    <title>Error</title>
+    <title><fmt:message key="error.title"/></title>
 </head>
 <body>
-<%@include  file="header.html" %>
-<br>
-<a href="../bank/login">Login</a> |
-<a href="../bank/register">Register</a>
-
-<br>
-<br>
-<hr>
+<%@include  file="fragments/header.jspf" %>
 <br>
 
-<div class="fig">
-    <pre class="fig" contenteditable="true">
-        ,adPPYba, 8b,dPPYba, 8b,dPPYba,  ,adPPYba,  8b,dPPYba,
-        a8P_____88 88P'   "Y8 88P'   "Y8 a8"     "8a 88P'   "Y8
-        8PP""""""" 88         88         8b       d8 88
-        "8b,   ,aa 88         88         "8a,   ,a8" 88
-        `"Ybbd8"' 88         88          `"YbbdP"'  88
-    </pre>
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="text-center">
+        <p class="fs-3"> <span class="text-danger"><fmt:message key="error.text.danger"/></span><fmt:message key="error.text"/></p>
+        <p class="lead">
+            <fmt:message key="error.solution"/>
+        </p>
+        <button type="button" class="btn btn-success" onclick="window.location = 'logout'"><fmt:message key="error.button.solution"/></button>
+    </div>
 </div>
-
-
 <br>
 <hr>
 <br>

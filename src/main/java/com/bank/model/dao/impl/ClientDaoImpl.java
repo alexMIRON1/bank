@@ -21,10 +21,10 @@ public class ClientDaoImpl implements ClientDao {
 
     // change to yours
     private  Connection conn;
-    public static boolean flag = true;
+    private int noOfRecords;
 
     // queries
-    private static final String QUERY_READ_CLIENTS = "SELECT * FROM client WHERE role_id=2";
+    private static final String QUERY_READ_CLIENTS = "SELECT SQL_CALC_FOUND_ROWS * FROM client WHERE role_id=2 LIMIT ?, ?";
     private static final String QUERY_READ_CLIENT_BY_ID = "SELECT * FROM client WHERE id=?";
     private static final String QUERY_READ_CLIENT_BY_LOGIN = "SELECT * FROM client WHERE login=?";
     private static final String QUERY_CREATE_CLIENT = "INSERT INTO client" +
@@ -128,9 +128,11 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public List<Client> getClients() throws ReadClientException {
+    public List<Client> getClients(int start, int end) throws ReadClientException {
         List<Client> clients = new ArrayList<>();
         try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CLIENTS)) {
+            preparedStatement.setInt(1,start);
+            preparedStatement.setInt(2,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Client client = new Client();
@@ -140,6 +142,11 @@ public class ClientDaoImpl implements ClientDao {
                 client.setClientStatus(ClientStatus.getClientStatus(resultSet.getInt("client_status_id")));
                 client.setRole(Role.getRole(resultSet.getInt("role_id")));
                 clients.add(client);
+            }
+            resultSet.close();
+            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            if (resultSet.next()){
+                this.noOfRecords = resultSet.getInt(1);
             }
             return clients;
         } catch (SQLException e) {
@@ -152,17 +159,19 @@ public class ClientDaoImpl implements ClientDao {
             }
         }
     }
+    @Override
+    public int getNoOfRecords() {
+        return noOfRecords;
+    }
 
     /**
      * gets connection
      * */
-    public   Connection getConnection() {
+    public  Connection getConnection() {
         try {
-            if(flag){
-                InitialContext initContext = new InitialContext();
-                DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-                conn = ds.getConnection();
-            }
+            InitialContext initContext = new InitialContext();
+            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
+            conn = ds.getConnection();
             return conn;
         } catch (NamingException | SQLException e) {
             throw new ConnectionException("Fail to obtain connection..", e);

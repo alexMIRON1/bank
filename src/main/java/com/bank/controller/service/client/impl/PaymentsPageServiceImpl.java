@@ -31,6 +31,7 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
     @Override
     public Card read(Integer id) throws ReadCardException{
         if(id == 0){
+            LOG.debug("card with id " + id  + "does not exist");
             throw new ReadCardException();
         }
         return cardDao.read(id);
@@ -39,6 +40,7 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
     @Override
     public List<Bill> getSortedBills(String sort, Card card, Page page) throws ReadBillException{
         if(card.getId() == 0){
+            LOG.debug("card with id " + card.getId()  + "does not exist");
             throw new ReadBillException();
         }
         int currentPage = page.getNumber();
@@ -72,6 +74,7 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
     @Override
     public Client fillClient(Integer id) throws ReadClientException {
         if(id==0){
+            LOG.debug("client with id " + id + "does not exist");
             throw new ReadClientException();
         }
         ClientDao clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);
@@ -81,6 +84,7 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
     @Override
     public Card fillCard(Integer id) throws ReadCardException {
         if(id == 0){
+            LOG.debug("card with id " + id  + "does not exist");
             throw new ReadCardException();
         }
         CardDao fillCardDao = (CardDao) FactoryDao.getInstance().getDao(DaoEnum.CARD_DAO);

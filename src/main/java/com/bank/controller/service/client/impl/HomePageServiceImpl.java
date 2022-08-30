@@ -25,6 +25,7 @@ public class HomePageServiceImpl implements  HomePageService {
     @Override
     public List<Card> sort(Client client, String sort, Page page) throws ReadCardException{
         if(client.getId() == 0){
+            LOG.debug("client with id " + client.getId()  + "does not exist");
             throw new ReadCardException();
         }
         int currentPage = page.getNumber();
@@ -56,6 +57,7 @@ public class HomePageServiceImpl implements  HomePageService {
     @Override
     public Client fillClient(Integer id) throws ReadClientException {
         if(id==0){
+            LOG.debug("client with id " + id  + "does not exist");
             throw new ReadClientException();
         }
         ClientDao clientDao = (ClientDao) FactoryDao.getInstance().getDao(DaoEnum.CLIENT_DAO);

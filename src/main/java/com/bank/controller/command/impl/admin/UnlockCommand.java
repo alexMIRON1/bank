@@ -3,6 +3,7 @@ package com.bank.controller.command.impl.admin;
 import com.bank.controller.command.Command;
 import com.bank.controller.service.admin.ControlUserService;
 import com.bank.model.entity.Client;
+import com.bank.model.entity.Page;
 import com.bank.model.exception.client.ReadClientException;
 import com.bank.model.exception.client.UpdateClientException;
 import org.apache.log4j.LogManager;
@@ -22,6 +23,7 @@ public class UnlockCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Integer clientId = Integer.parseInt(request.getParameter("id"));
+        Page page = (Page) request.getSession().getAttribute("page");
         try {
             Client client = controlUserService.read(clientId);
             controlUserService.update(client);
@@ -35,6 +37,6 @@ public class UnlockCommand implements Command {
             return "/error.jsp";
         }
         LOG.info("client was successfully unlocked");
-        return "redirect:/bank/admin";
+        return "redirect:/bank/admin?page=" + page.getNumber();
     }
 }

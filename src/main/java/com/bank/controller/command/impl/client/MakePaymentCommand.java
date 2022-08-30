@@ -38,7 +38,7 @@ public class MakePaymentCommand implements Command {
             return "/payments.jsp";
         } catch (CardBannedException e) {
             LOG.debug("fail to create bill--> card is banned");
-            return "/error.jsp";
+            return "/home.jsp";
         }
         return "redirect:/bank/payments?page=" + page.getNumber() + "&card=" + card.getId();
     }

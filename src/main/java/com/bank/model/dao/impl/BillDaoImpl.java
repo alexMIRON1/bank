@@ -20,9 +20,7 @@ import java.util.List;
 public class BillDaoImpl implements BillDao {
 
     private  Connection conn;
-    public static boolean flag = true;
     private int noOfRecords;
-    // queries
     private static final String QUERY_CREATE_BILL = "INSERT INTO bill (id, sum, date, card_id, bill_status_id) VALUE " +
             "(DEFAULT, ?, DEFAULT, ?, ?)";
     private static final String QUERY_UPDATE_BILL = "UPDATE bill SET bill_status_id=? where id=?";
@@ -34,7 +32,6 @@ public class BillDaoImpl implements BillDao {
     private static final String QUERY_SHOW_BILLS = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? LIMIT ?, ?";
     private static final String QUERY_DELETE_BILL = "DELETE FROM bill WHERE id=?";
     public BillDaoImpl() {
-        // here you could place additional conf
     }
     public BillDaoImpl(Connection connection){
         conn = connection;
@@ -304,12 +301,10 @@ public class BillDaoImpl implements BillDao {
      * */
     private  Connection getConnection() {
         try {
-            if(flag) {
-                InitialContext initContext = new InitialContext();
-                DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-                conn = ds.getConnection();
-            }
-        return conn;
+            InitialContext initContext = new InitialContext();
+            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
+            conn = ds.getConnection();
+            return conn;
         } catch (SQLException | NamingException e) {
             throw new ConnectionException("Fail to obtain connection..", e);
         }

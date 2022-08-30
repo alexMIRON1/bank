@@ -22,10 +22,9 @@ public class CardDaoImpl implements CardDao {
     // change to yours
 
     private  Connection conn;
-    public static boolean flag = true;
     private int noOfRecords;
     // queries
-    private static final String QUERY_READ_CARDS_READY_TO_UNBLOCK = "SELECT * FROM card WHERE card_status_id=3";
+    private static final String QUERY_READ_CARDS_READY_TO_UNBLOCK = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE card_status_id=3 LIMIT ?, ?";
     private static final String QUERY_READ_CARD_BY_CARD_ID = "SELECT * FROM card WHERE id=?";
     private static final String QUERY_READ_CARDS_BY_CLIENT_ID = "SELECT * FROM card WHERE client_id=?";
     private static final String QUERY_READ_LAST_CARD_NAME = "SELECT name FROM card ORDER BY name DESC LIMIT 1";
@@ -308,8 +307,10 @@ public class CardDaoImpl implements CardDao {
     }
 
     @Override
-    public List<Card> getCardsToUnblock() throws ReadCardException{
+    public List<Card> getCardsToUnblock(int start, int end) throws ReadCardException{
         try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_READY_TO_UNBLOCK)) {
+            preparedStatement.setInt(1,start);
+            preparedStatement.setInt(2,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Card> cards = new ArrayList<>();
             while (resultSet.next()) {
@@ -321,6 +322,11 @@ public class CardDaoImpl implements CardDao {
                 card.setClient(new Client(resultSet.getInt("client_id")));
                 card.setCustomName(resultSet.getString("name_custom"));
                 cards.add(card);
+            }
+            resultSet.close();
+            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            if (resultSet.next()){
+                this.noOfRecords = resultSet.getInt(1);
             }
             return cards;
         } catch (SQLException e) {
@@ -338,11 +344,9 @@ public class CardDaoImpl implements CardDao {
      * */
     private  Connection getConnection() {
         try {
-            if(flag){
-                InitialContext initContext= new InitialContext();
-                DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-                conn = ds.getConnection();
-            }
+            InitialContext initContext= new InitialContext();
+            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
+            conn = ds.getConnection();
             return  conn;
         } catch (SQLException | NamingException e) {
             throw new ConnectionException("Fail to obtain connection..", e);

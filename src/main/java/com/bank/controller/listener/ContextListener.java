@@ -3,10 +3,7 @@ package com.bank.controller.listener;
 import com.bank.controller.command.Command;
 import com.bank.controller.command.CommandContainer;
 import com.bank.controller.command.impl.*;
-import com.bank.controller.command.impl.admin.AdminPageCommand;
-import com.bank.controller.command.impl.admin.LockCommand;
-import com.bank.controller.command.impl.admin.UnblockCommand;
-import com.bank.controller.command.impl.admin.UnlockCommand;
+import com.bank.controller.command.impl.admin.*;
 import com.bank.controller.command.impl.client.*;
 import com.bank.controller.service.*;
 import com.bank.controller.service.admin.AdminPageService;
@@ -136,5 +133,14 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
         command = new UnlockCommand(controlUserService);
         container.put("/unlock", command);
         LOG.info("unlockCommand successfully put");
+        //blockedCardPage
+        container.put("/blockedCards", new BlockedCardsPageCommand(adminPageService));
+        LOG.info("blockedCardsPage successfully put ");
+        //aboutPage
+        container.put("/about", new AboutPageCommand());
+        LOG.info("aboutPage successfully put");
+        //getReceipt
+        container.put("/receipt",new GetReceiptCommand(billsService));
+
     }
 }

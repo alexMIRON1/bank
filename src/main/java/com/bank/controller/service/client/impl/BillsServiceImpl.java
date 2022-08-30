@@ -31,7 +31,8 @@ public class BillsServiceImpl implements BillsService {
 
     @Override
     public Bill read(Integer id) throws ReadBillException {
-        if(id==null){
+        if(id==0){
+            LOG.debug("bill with id " + id + "does not exist");
             throw new ReadBillException();
         }
         return billDao.read(id);
@@ -83,6 +84,7 @@ public class BillsServiceImpl implements BillsService {
     @Override
     public Card fillCard(Integer id) throws ReadCardException {
         if(id == 0){
+            LOG.debug("card with id " + id + "does not exist");
             throw  new ReadCardException();
         }
         CardDao cardDao = (CardDao) FactoryDao.getInstance().getDao(DaoEnum.CARD_DAO);

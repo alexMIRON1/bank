@@ -35,10 +35,14 @@ public class AuthorizedServiceImpl implements AuthorizedService {
     @Override
     public Client get(String login, String password) throws ReadClientException, WrongPasswordException, ClientBannedException {
         Client client = clientDao.getClient(login);
-        if(!client.getPassword().equals(password))
+        if(!client.getPassword().equals(password)){
+            LOG.debug("wrong password");
             throw new WrongPasswordException();
-        if(client.getClientStatus().equals(ClientStatus.BLOCKED))
+        }
+        if(client.getClientStatus().equals(ClientStatus.BLOCKED)){
+            LOG.debug("client " + login + "was banned");
             throw new ClientBannedException();
+        }
         return client;
     }
 }

@@ -1,0 +1,40 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<l:setLocale/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+</head>
+<body>
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <h1 class="site-title text-warning" style="text-align: left">
+                IBANK
+            </h1>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <c:if test="${not empty client.login}">
+                    <li><a href="../bank/home" class="nav-link px-2 text-white"><fmt:message key="header.label.home"/></a></li>
+                </c:if>
+                <c:if test="${client.role.role eq 'admin'}">
+                    <a href="../bank/admin" class="nav-link px-2 text-white"><fmt:message key="header.label.admin"/></a>
+                </c:if>
+                <li><a href="../bank/about" class="nav-link px-2 text-white"><fmt:message key="header.label.about"/></a></li>
+            </ul>
+            <div class="text-end">
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="locale?lang=en" class="nav-link px-2 text-white">EN</a></li>
+                    <li><a href="locale?lang=ru" class="nav-link px-2 text-white">RU</a></li>
+                    <c:if test="${client.role.id eq 2 || client.role.id eq 1}">
+                        <button type="button" class="btn btn-warning" onclick="window.location = 'logout'"><fmt:message key="header.link.logout"/></button>
+                    </c:if>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>

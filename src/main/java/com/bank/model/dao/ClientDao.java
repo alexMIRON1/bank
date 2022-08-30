@@ -62,9 +62,11 @@ public interface ClientDao extends Dao {
      * @return list of clients
      * @throws ReadClientException in case when clients was not read
      * */
-    List<Client> getClients() throws ReadClientException;
+    List<Client> getClients(int start,int end) throws ReadClientException;
     /**
-     * gets connection with database
-     * @return connection
+     * gets amount of records
+     * @return amount of records
      * */
+    int getNoOfRecords();
+
 }

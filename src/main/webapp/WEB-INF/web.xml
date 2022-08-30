@@ -7,13 +7,35 @@
         <param-name>dataSource</param-name>
         <param-value>jdbc/mysql</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>messages</param-value>
+    </context-param>
 
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
+        <param-value>en</param-value>
+    </context-param>
     <resource-env-ref>
         <description>Provide access for DataSource</description>
         <resource-env-ref-name>jdbc/mysql</resource-env-ref-name>
         <resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
 
     </resource-env-ref>
+
+    <servlet>
+        <display-name>Locale</display-name>
+        <servlet-name>Locale</servlet-name>
+        <servlet-class>com.bank.controller.Locale</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Locale</servlet-name>
+        <url-pattern>/locale</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.pdf</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>CharSetFilter</filter-name>
         <filter-class> com.bank.controller.filter.CharSetFilter</filter-class>

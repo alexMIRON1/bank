@@ -1,30 +1,53 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
+<l:setLocale/>
 <html>
 <head>
-    <title>Login Page</title>
+    <title><fmt:message key="login.title"/></title>
 </head>
 <body>
-<%@include  file="header.html" %>
+<%@include  file="fragments/header.jspf" %>
 <br>
-<a href="../bank/login">Login</a> |
-<a href="../bank/register">Register</a>
+<section class="vh-100 bg-image"
+         style="background-image: url('https://mdbcdn.b-cdn.net/img/new/fluid/city/055.webp');">
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h2 class="text-uppercase text-center mb-5"><fmt:message key="login.form.name"/></h2>
 
-<br>
-<hr>
-<br>
+                            <form action="../bank/toLogin" method="post">
+                                <div class="form-outline mb-4">
+                                    <input type="text" id="login" name="login" class="form-control form-control-lg" onkeyup="validateRegister()" />
+                                    <label class="form-label" for="login"><fmt:message key="login.label.login"/></label><br>
+                                    <span id='messageLogin'></span><br>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg" onkeyup="validateRegister()" />
+                                    <label class="form-label" for="password"><fmt:message key="login.label.password"/></label><br>
+                                    <span id='messagePassword'></span><br>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" id="button" onclick="validateRegister()"
+                                            class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"><fmt:message key="login.button.login"/></button>
+                                </div>
 
-<form action="../bank/toLogin" method="post">
-    <input type="text" id = "login" name="login" placeholder="login" onkeyup="matchLogin()">
-    <span id='messageLogin'></span><br>
-    <input type="password" id="password" name="password" placeholder="password" onkeyup="matchPassword()">
-    <span id='messagePassword'></span><br>
-    <button type="submit" id = "button">
-        Enter account
-    </button>
-</form>
+                                <p class="text-center text-muted mt-5 mb-0"><fmt:message key="login.link.question"/> <a href="../bank/register"
+                                                                                                        class="fw-bold text-body"><u><fmt:message key="login.link.answer"/></u></a></p>
 
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <br>
 <hr>
 <jsp:include page="validation.jsp"/>

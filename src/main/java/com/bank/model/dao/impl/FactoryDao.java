@@ -13,7 +13,7 @@ public class FactoryDao {
         // here you could place conf if needed
     }
 
-    public synchronized static FactoryDao getInstance() {
+    public static synchronized FactoryDao getInstance() {
         if(Objects.isNull(instance))
             instance = new FactoryDao();
         return instance;

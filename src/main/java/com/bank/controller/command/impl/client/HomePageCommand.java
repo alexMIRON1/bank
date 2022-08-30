@@ -12,8 +12,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +27,7 @@ public class HomePageCommand implements Command {
     public String execute(HttpServletRequest request) {
         Client client = (Client) request.getSession().getAttribute("client");
         String sort = Objects.isNull(request.getParameter("sort")) ? "" : request.getParameter("sort");
+        String locale = String.valueOf(request.getSession().getAttribute("locale"));
         try {
             Page page = new Page();
             page.setNumberPage(1);

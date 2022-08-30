@@ -1,31 +1,38 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <script>
 function validateRegister(){
-    if(document.getElementById("password").value !==document.getElementById("confirm_password").value){
-        document.getElementById('messageConfirm').style.color = 'red';
-        document.getElementById('messageConfirm').innerHTML = 'passwords are not same';
-        document.getElementById('button').disabled = true;
-    }else {
-        document.getElementById('messageConfirm').style.color = 'green';
-        document.getElementById('messageConfirm').innerHTML = 'correct'
-        document.getElementById('button').disabled = false;
-    }
     let el = document.getElementById('login').value;
-    if(el.match('^[a-zA-Zа-яА-Я]{3,30}$')){
+    var reg = '^[a-zA-Z]{3,30}$|^[а-яА-Я]{3,30}$';
+    if(el.match(reg)){
         document.getElementById('messageLogin').innerHTML = '';
         document.getElementById('button').disabled = false;
-    }else {
-        document.getElementById('messageLogin').style.color = 'red';
-        document.getElementById('messageLogin').innerHTML = 'Input only Latin or Cyrillic, 3-30 letters';
-        document.getElementById('button').disabled = true;
-    }
-    if(document.getElementById('password').value.length >= 4 && document.getElementById('password').value.length <=16){
-        document.getElementById('messagePassword').innerHTML = '';
-        document.getElementById('button').disabled = false;
+        if(document.getElementById('password').value.length >= 4 && document.getElementById('password').value.length <=16) {
+            document.getElementById('messagePassword').innerHTML = '';
+            document.getElementById('button').disabled = false;
+            if(document.getElementById("password").value !==document.getElementById("confirm_password").value) {
+                document.getElementById('messageConfirm').style.color = 'red';
+                document.getElementById('messageConfirm').innerHTML = '<fmt:message key="validation.message.confirm.password"/>';
+                document.getElementById('button').disabled = true;
+            }else{
+                document.getElementById('messageConfirm').style.color = 'green';
+                document.getElementById('messageConfirm').innerHTML = '<fmt:message key="validation.message.confirm"/>';
+                document.getElementById('button').disabled = false;
+                return false;
+            }
+        }else{
+            document.getElementById('messagePassword').style.color = 'red';
+            document.getElementById('messagePassword').innerHTML = '<fmt:message key="validation.message.password"/>';
+            document.getElementById('button').disabled = true;
+            return false;
+        }
     }else{
-        document.getElementById('messagePassword').style.color = 'red';
-        document.getElementById('messagePassword').innerHTML = '4-16 symbols'
+        document.getElementById('messageLogin').style.color = 'red';
+        document.getElementById('messageLogin').innerHTML = '<fmt:message key="validation.message.confirm.login"/>';
         document.getElementById('button').disabled = true;
+        return false;
     }
+    return true;
 }
 function matchMakePayment(balance){
     const sum = parseInt(document.getElementById('sum').value);
@@ -35,7 +42,7 @@ function matchMakePayment(balance){
         return true;
     }else{
         document.getElementById('messagePayment').style.color = 'red';
-        document.getElementById('messagePayment').innerHTML = 'not enough money on balance';
+        document.getElementById('messagePayment').innerHTML = '<fmt:message key="validation.message.make_Payment"/>';
         document.getElementById('button').disabled = true;
         return false;
     }
@@ -48,9 +55,23 @@ function matchTopUp(){
         return true;
     }else{
         document.getElementById('messageTopUp').style.color = 'red';
-        document.getElementById('messageTopUp').innerHTML = 'max top-up 10.000'
+        document.getElementById('messageTopUp').innerHTML = '<fmt:message key="validation.message.top-up"/>'
         document.getElementById('button').disabled = true;
         return false;
+    }
+}
+function matchSetName(){
+    const name = document.getElementById('customName').value;
+    var reg = /^[a-zA-Z0-9 ']+$|^[а-яА-Я0-9 ']+$/
+    if(name.match(reg)){
+        document.getElementById('messageSetName').innerHTML = '';
+        document.getElementById('buttonName').disabled = false;
+        return true;
+    }else {
+        document.getElementById('messageSetName').style.color = 'red';
+        document.getElementById('messageSetName').innerHTML = '<fmt:message key="validation.message.set_name"/>'
+        document.getElementById('buttonName').disabled = true;
+        return  false;
     }
 }
 </script>

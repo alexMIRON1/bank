@@ -6,6 +6,7 @@ import com.bank.model.dao.CardDao;
 import com.bank.model.dao.impl.DaoEnum;
 import com.bank.model.dao.impl.FactoryDao;
 import com.bank.model.entity.Card;
+import com.bank.model.entity.Page;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 import org.apache.log4j.LogManager;
@@ -25,6 +26,7 @@ public class UnblockCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Integer cardId = Integer.parseInt(request.getParameter("id"));
+        Page page = (Page) request.getSession().getAttribute("page");
         try {
             Card card = unblockService.read(cardId);
             unblockService.update(card);
@@ -38,6 +40,6 @@ public class UnblockCommand implements Command {
             return "/error.jsp";
         }
         LOG.info("card was successfully unblocked");
-        return "redirect:/bank/admin";
+        return "redirect:/bank/blockedCards?page=" + page.getNumber();
     }
 }

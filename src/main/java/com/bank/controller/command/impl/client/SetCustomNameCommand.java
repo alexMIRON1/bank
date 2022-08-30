@@ -27,7 +27,7 @@ public class SetCustomNameCommand implements Command {
             Card card = cardsService.read(cardId);
             String customName = request.getParameter("customName");
             cardsService.updateCustomName(card, customName);
-            LOG.info("name was successfully set");
+            LOG.info( customName + " was successfully set");
             return "redirect:/bank/home?page=" + page.getNumber() + "&sort=" + page.getState();
         } catch (ReadCardException e) {
             LOG.debug("fail to set name because card does not exist");

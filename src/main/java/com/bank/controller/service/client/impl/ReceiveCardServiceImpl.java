@@ -7,10 +7,13 @@ import com.bank.model.entity.CardStatus;
 import com.bank.model.entity.Client;
 import com.bank.model.exception.card.CreateCardException;
 import com.bank.model.exception.card.ReadCardException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 public class ReceiveCardServiceImpl implements ReceiveCardService {
     private final CardDao cardDao;
+    private static final Logger LOG = LogManager.getLogger(ReceiveCardServiceImpl.class);
 
     public ReceiveCardServiceImpl(CardDao cardDao) {
         this.cardDao = cardDao;
@@ -18,10 +21,8 @@ public class ReceiveCardServiceImpl implements ReceiveCardService {
 
     @Override
     public void create(Card card, Client client) throws CreateCardException, ReadCardException{
-        if(card.getId()==0){
-            throw new ReadCardException();
-        }
         if(client.getId() ==0){
+            LOG.debug("client with id " + client.getId()  + "does not exist");
             throw new CreateCardException();
         }
         card.setName(generateName());

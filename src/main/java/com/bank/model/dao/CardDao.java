@@ -113,6 +113,6 @@ public interface CardDao extends Dao {
      * gets cards need to unlock
      * @return the list of cards where status eq 'ready to unblock'
      * */
-    List<Card> getCardsToUnblock() throws ReadCardException;
+    List<Card> getCardsToUnblock(int start, int end) throws ReadCardException;
 
 }

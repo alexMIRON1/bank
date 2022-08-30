@@ -19,7 +19,8 @@ public class CardsServiceImpl implements CardsService {
 
     @Override
     public void updateStatus(Card card) throws UpdateCardException{
-        if(card.getId() == null){
+        if(card.getId() == 0){
+            LOG.debug("card with id " + card.getId()  + "does not exist");
             throw new UpdateCardException();
         }
         if(card.getCardStatus() == CardStatus.BLOCKED){
@@ -51,7 +52,7 @@ public class CardsServiceImpl implements CardsService {
 
     @Override
     public void updateCustomName(Card card, String name) throws UpdateCardException{
-        if(card.getId() == null){
+        if(card.getId() == 0){
             LOG.debug("card does not exist");
             throw new UpdateCardException();
         }
