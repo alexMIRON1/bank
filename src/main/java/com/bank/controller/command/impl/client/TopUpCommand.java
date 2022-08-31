@@ -33,7 +33,7 @@ public class TopUpCommand implements Command {
         try {
             Card card = cardsService.read(cardId);
             cardsService.updateTopUp(card,topUp);
-            LOG.info("card was successfully top up");
+            LOG.info("card " + cardId + " was successfully top up");
         } catch (ReadCardException e) {
             // fail to read card. perhaps such card does not exist
             LOG.debug("fail to obtain card");

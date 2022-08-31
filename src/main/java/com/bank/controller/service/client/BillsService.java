@@ -12,8 +12,8 @@ import java.util.List;
 
 public interface BillsService {
     Bill read(Integer id) throws ReadBillException;
-    void updateCard(Card card,Bill bill) throws UpdateCardException, NotEnoughException;
-    void updateBill(Bill bill, Card card) throws UpdateBillException;
+    void updateCard(Card cardFrom, Card cardTo,Bill bill) throws UpdateCardException, NotEnoughException;
+    void updateBill(Bill bill, Card card, Card cardTo) throws UpdateBillException;
     List<Bill> getBills(Card card) throws ReadBillException;
     void delete(Integer id) throws DeleteBillException;
     Card fillCard(Integer id) throws ReadCardException;

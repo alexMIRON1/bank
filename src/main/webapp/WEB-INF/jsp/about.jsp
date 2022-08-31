@@ -17,11 +17,17 @@
         <main>
             <h1><fmt:message key="about.title.label"/> </h1> <h1 class="text-warning">IBANK</h1>
             <p class="fs-5 col-md-8"><fmt:message key="about.information"/>
-                <br><fmt:message key="about.link.question"/></p>
-            <div class="mb-5">
-                <a href="../bank/login" class="btn btn-success btn-lg px-4"><fmt:message key="about.link.answer"/></a>
-            </div>
+                <c:choose>
+                    <c:when test="${client.role.id eq 1 || client.role.id eq 2}">
 
+                    </c:when>
+                    <c:otherwise>
+                        <br><fmt:message key="about.link.question"/></p>
+                        <div class="mb-5">
+                            <a href="../bank/login" class="btn btn-success btn-lg px-4"><fmt:message key="about.link.answer"/></a>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             <hr class="col-3 col-md-2 mb-5">
 
             <div class="row g-5">

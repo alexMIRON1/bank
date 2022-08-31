@@ -40,6 +40,14 @@ public interface CardDao extends Dao {
      * @throws UpdateCardException in case when card was not updated
      * */
     Card update(Card card) throws UpdateCardException;
+    /**
+     * updated cards in databes
+     * @param from sender's card
+     * @param to recipient's card
+     * @return updated list cards
+     * @throws UpdateCardException in case where something card was not updated
+     * **/
+    List<Card> transferCard(Card from, Card to) throws  UpdateCardException;
 
     /**
      * deletes card by id in the database

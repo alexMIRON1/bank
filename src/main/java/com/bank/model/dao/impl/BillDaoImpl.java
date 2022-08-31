@@ -19,11 +19,10 @@ import java.util.List;
 
 public class BillDaoImpl implements BillDao {
 
-    private  Connection conn;
     private int noOfRecords;
-    private static final String QUERY_CREATE_BILL = "INSERT INTO bill (id, sum, date, card_id, bill_status_id) VALUE " +
-            "(DEFAULT, ?, DEFAULT, ?, ?)";
-    private static final String QUERY_UPDATE_BILL = "UPDATE bill SET bill_status_id=? where id=?";
+    private static final String QUERY_CREATE_BILL = "INSERT INTO bill (id, sum, date, card_id, bill_status_id, recipient) VALUE " +
+            "(DEFAULT, ?, DEFAULT, ?, ?, ?)";
+    private static final String QUERY_UPDATE_BILL = "UPDATE bill SET bill_status_id=?,recipient=? where id=?";
     private static final String QUERY_READ_BILL = "SELECT * FROM bill WHERE id=?";
     private static final String QUERY_READ_BILLS_BY_CARD_ID = "SELECT * FROM bill WHERE card_id=?";
     private static final String QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? ORDER BY id LIMIT ?, ?";
@@ -33,35 +32,29 @@ public class BillDaoImpl implements BillDao {
     private static final String QUERY_DELETE_BILL = "DELETE FROM bill WHERE id=?";
     public BillDaoImpl() {
     }
-    public BillDaoImpl(Connection connection){
-        conn = connection;
-    }
 
     @Override
     public Bill create(Bill bill) throws CreateBillException {
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_CREATE_BILL)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CREATE_BILL)) {
             preparedStatement.setInt(1, bill.getSum());
             preparedStatement.setInt(2, bill.getCard().getId());
             preparedStatement.setInt(3, bill.getBillStatus().getId());
+            preparedStatement.setString(4, bill.getRecipient());
             int i = preparedStatement.executeUpdate();
             if(i != 1)
                 throw new SQLException();
             return bill;
         } catch (SQLException e) {
             throw new CreateBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Bill read(Integer id) throws ReadBillException {
         Bill bill = new Bill();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_BILL)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILL)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -70,41 +63,33 @@ public class BillDaoImpl implements BillDao {
             bill.setDate(resultSet.getDate("date"));
             bill.setCard(new Card(resultSet.getInt("card_id")));
             bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+            bill.setRecipient(resultSet.getString("recipient"));
             return bill;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Bill update(Bill bill) throws UpdateBillException {
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_UPDATE_BILL)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_UPDATE_BILL)) {
             preparedStatement.setInt(1, bill.getBillStatus().getId());
-            preparedStatement.setInt(2, bill.getId());
+            preparedStatement.setString(2, bill.getRecipient());
+            preparedStatement.setInt(3, bill.getId());
             int i = preparedStatement.executeUpdate();
             if(i != 1)
                 throw new SQLException();
             return bill;
         } catch (SQLException e) {
             throw new UpdateBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Integer delete(Integer id) throws DeleteBillException {
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_DELETE_BILL)){
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_DELETE_BILL)){
             preparedStatement.setInt(1,id);
             int i = preparedStatement.executeUpdate();
             if(i != 1)
@@ -112,19 +97,14 @@ public class BillDaoImpl implements BillDao {
             return id;
         }catch (SQLException e){
             throw new DeleteBillException(e.getMessage(),e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Bill> getBills(Card card) throws ReadBillException{
         List<Bill> bills = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_BILLS_BY_CARD_ID)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID)) {
             preparedStatement.setInt(1, card.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -134,17 +114,12 @@ public class BillDaoImpl implements BillDao {
                 bill.setDate(resultSet.getDate("date"));
                 bill.setCard(new Card(resultSet.getInt("card_id")));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+                bill.setRecipient(resultSet.getString("recipient"));
                 bills.add(bill);
             }
             return bills;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
@@ -156,7 +131,8 @@ public class BillDaoImpl implements BillDao {
     @Override
     public List<Bill> getBillsOnPage(Card card, int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_SHOW_BILLS)){
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_SHOW_BILLS)){
             preparedStatement.setInt(1,card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -168,6 +144,7 @@ public class BillDaoImpl implements BillDao {
                 bill.setDate(resultSet.getDate("date"));
                 bill.setCard(new Card(resultSet.getInt("card_id")));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+                bill.setRecipient(resultSet.getString("recipient"));
                 bills.add(bill);
             }
             resultSet.close();
@@ -179,12 +156,6 @@ public class BillDaoImpl implements BillDao {
 
         }catch (SQLException e){
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
         return bills;
     }
@@ -193,7 +164,8 @@ public class BillDaoImpl implements BillDao {
     @Override
     public List<Bill> getBillsSortedById(Card card,int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -205,6 +177,7 @@ public class BillDaoImpl implements BillDao {
                 bill.setDate(resultSet.getDate("date"));
                 bill.setCard(new Card(resultSet.getInt("card_id")));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+                bill.setRecipient(resultSet.getString("recipient"));
                 bills.add(bill);
             }
             resultSet.close();
@@ -216,19 +189,14 @@ public class BillDaoImpl implements BillDao {
             return bills;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Bill> getBillsSortedByDate(Card card,int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -240,6 +208,7 @@ public class BillDaoImpl implements BillDao {
                 bill.setDate(resultSet.getDate("date"));
                 bill.setCard(new Card(resultSet.getInt("card_id")));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+                bill.setRecipient(resultSet.getString("recipient"));
                 bills.add(bill);
             }
             resultSet.close();
@@ -251,19 +220,14 @@ public class BillDaoImpl implements BillDao {
             return bills;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Bill> getBillsSortedByDateDesc(Card card, int start,int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -275,6 +239,7 @@ public class BillDaoImpl implements BillDao {
                 bill.setDate(resultSet.getDate("date"));
                 bill.setCard(new Card(resultSet.getInt("card_id")));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
+                bill.setRecipient(resultSet.getString("recipient"));
                 bills.add(bill);
             }
             resultSet.close();
@@ -286,28 +251,20 @@ public class BillDaoImpl implements BillDao {
             return bills;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
-
         }
     }
 
     /**
      * gets connection
      * */
-    private  Connection getConnection() {
-        try {
-            InitialContext initContext = new InitialContext();
-            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-            conn = ds.getConnection();
-            return conn;
-        } catch (SQLException | NamingException e) {
-            throw new ConnectionException("Fail to obtain connection..", e);
-        }
+    private DataSource ds;
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return ds.getConnection();
     }
 
 }

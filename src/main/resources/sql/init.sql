@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `bank`.`bill` (
                                              `date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
                                              `card_id` INT UNSIGNED NOT NULL,
                                              `bill_status_id` INT UNSIGNED NOT NULL,
+                                             `recipient` VARCHAR(45),
                                              PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
     INDEX `fk_bill_card1_idx` (`card_id` ASC) VISIBLE,

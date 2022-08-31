@@ -7,6 +7,7 @@ public class Bill {
     private Integer sum;
     private Date date;
     private Card card;
+    private String recipient;
     private BillStatus billStatus;
 
     public Bill() {
@@ -56,5 +57,6 @@ public class Bill {
     public void setBillStatus(BillStatus billStatus) {
         this.billStatus = billStatus;
     }
-
+    public String getRecipient(){return recipient;}
+    public void setRecipient(String recipient){this.recipient = recipient;}
 }

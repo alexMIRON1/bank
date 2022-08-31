@@ -1,6 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
+<%@ taglib prefix="cur" uri="/WEB-INF/jstl-tld/custom.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
 <html>
@@ -9,10 +10,7 @@
     <%@include  file="fragments/header.jspf" %>
 </head>
 <body>
-
-<br>
-
-
+<p class="fw-bolder"><cur:Currency/></p>
 <c:choose>
     <c:when test="${client.role.id eq 2 || client.role.id eq 1 }">
         <br>
@@ -50,19 +48,19 @@
                                 </div>
                                 <div class="text-start">
                                     <div class="modal-body">
-                                        <form action="../bank/setName" method="post">
+                                        <form action="../bank/top-up" method="post">
                                             <input type="text" value="${card.id}" name="card" hidden>
+                                            <input type="number" name="top-up" id="top-up" onkeyup="matchTopUp()">
+                                            <button type="submit" id="button" class="btn btn-success"><fmt:message key="home.modal.top-up.button"/></button><br>
+                                            <label class="form-label" for="top-up"><fmt:message key="home.modal.top-up.label"/></label>
+                                            <span id="messageTopUp"></span>
+                                        </form>
+                                        <form action="../bank/setName" method="post">
+                                            <input type="text" id="textName" value="${card.id}" name="card" hidden>
                                             <input type="text" id = "customName" name="customName" onkeyup="matchSetName()">
                                             <button type="submit" id = "buttonName" class="btn btn-success"><fmt:message key="home.modal.name.set"/></button><br>
                                             <label class="form-label text-start" for="customName"><fmt:message key="home.modal.name.label"/></label>
                                             <span id = "messageSetName"></span>
-                                        </form><br>
-                                        <form action="../bank/top-up" method="post">
-                                            <input type="text" value="${card.id}" name="card" hidden>
-                                            <input type="number"name="top-up" id="top-up" onkeyup="matchTopUp()">
-                                            <button type="submit" id="button" class="btn btn-success"><fmt:message key="home.modal.top-up.button"/></button><br>
-                                            <label class="form-label" for="top-up"><fmt:message key="home.modal.top-up.label"/></label>
-                                            <span id="messageTopUp"></span>
                                         </form>
                                         <c:choose>
                                             <c:when test="${card.cardStatus.status eq 'unblocked'}">
@@ -152,12 +150,13 @@
     exampleModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget
         var id = button.getAttribute('data-bs-whatever').split(",")[0];
-        var customName = button.getAttribute('data-bs-whatever').split(",")[1];
+        var customName = button.getAttribute('data-bs-whatever').split(",")[1]
         var modalTitle = exampleModal.querySelector('.modal-title')
         var modalBodyInput = exampleModal.querySelector('.modal-body input')
 
         modalTitle.textContent = '<fmt:message key="home.modal.title"/> ' + customName;
         modalBodyInput.value = id
+        document.getElementById('textName').value = id;
     })
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>

@@ -66,7 +66,9 @@ public class BillsServiceTest {
     @Test
     public void testUpdateCard() throws UpdateCardException, NotEnoughException {
         Card testCard = Entity.createCard();
-        billsService.updateCard(testCard,bill);
+        Card toCard = Entity.createCard();
+        toCard.setBalance(10);
+        billsService.updateCard(testCard,toCard,bill);
         card.setBalance(card.getBalance()-bill.getSum());
         assertEquals(testCard.getBalance(),card.getBalance());
     }
@@ -74,24 +76,24 @@ public class BillsServiceTest {
     public void testWrongIdCardUpdateCard() throws UpdateCardException, NotEnoughException {
         Card testCard =Entity.createCard();
         testCard.setId(0);
-        billsService.updateCard(testCard,bill);
+        billsService.updateCard(testCard,new Card(),bill);
     }
     @Test(expected = UpdateCardException.class)
     public void testWrongIdBillUpdateCard() throws UpdateCardException, NotEnoughException {
         Bill testBill = Entity.createBill();
         testBill.setId(0);
-        billsService.updateCard(card,testBill);
+        billsService.updateCard(card,new Card(),testBill);
     }
     @Test(expected = NotEnoughException.class)
     public void testNotEnoughUpdateCard() throws UpdateCardException, NotEnoughException {
         Bill testBill = Entity.createBill();
         testBill.setSum(400);
-        billsService.updateCard(card,testBill);
+        billsService.updateCard(card,new Card(),testBill);
     }
     @Test
     public void testUpdateBill() throws UpdateBillException {
         Bill testBill = Entity.createBill();
-        billsService.updateBill(testBill,card);
+        billsService.updateBill(testBill,card, new Card());
         bill.setBillStatus(BillStatus.PAID);
         assertEquals(bill.getBillStatus().getId(),testBill.getBillStatus().getId());
     }
@@ -99,13 +101,13 @@ public class BillsServiceTest {
     public void testWrongIdCardUpdateBill() throws UpdateBillException{
         Card testCard =Entity.createCard();
         testCard.setId(0);
-        billsService.updateBill(bill,testCard);
+        billsService.updateBill(bill,testCard, new Card());
     }
     @Test(expected = UpdateBillException.class)
     public void testWrongIdBillUpdateBill() throws UpdateBillException {
         Bill testBill = Entity.createBill();
         testBill.setId(0);
-        billsService.updateBill(testBill,card);
+        billsService.updateBill(testBill,card, new Card());
     }
     @Test
     public void testGetBills() throws ReadBillException {

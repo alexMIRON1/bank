@@ -20,8 +20,6 @@ import java.util.List;
 public class CardDaoImpl implements CardDao {
 
     // change to yours
-
-    private  Connection conn;
     private int noOfRecords;
     // queries
     private static final String QUERY_READ_CARDS_READY_TO_UNBLOCK = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE card_status_id=3 LIMIT ?, ?";
@@ -35,16 +33,13 @@ public class CardDaoImpl implements CardDao {
             "VALUE (DEFAULT, ?, ?, ?, ?, ?)";
     private static final String QUERY_UPDATE_CARD = "UPDATE card SET balance=?, card_status_id=?, name_custom=? WHERE id=?";
     private static final String QUERY_SHOW_CARD_PAGE = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE client_id=? LIMIT ?, ?";
-
     public CardDaoImpl() {
         // here you could place additional conf
     }
-    public CardDaoImpl(Connection connection){
-        conn = connection;
-    }
     @Override
     public Card create(Card card) throws CreateCardException {
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_CREATE_CARD)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CREATE_CARD)) {
             preparedStatement.setString(1, card.getName());
             preparedStatement.setInt(2, card.getBalance());
             preparedStatement.setInt(3, card.getCardStatus().getId());
@@ -56,19 +51,14 @@ public class CardDaoImpl implements CardDao {
             return card;
         } catch (SQLException e) {
             throw new CreateCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Card read(Integer id) throws ReadCardException{
         Card card = new Card();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARD_BY_CARD_ID)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARD_BY_CARD_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -81,18 +71,13 @@ public class CardDaoImpl implements CardDao {
             return card;
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Card update(Card card) throws UpdateCardException{
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_UPDATE_CARD)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_UPDATE_CARD)) {
             preparedStatement.setInt(1, card.getBalance());
             preparedStatement.setInt(2, card.getCardStatus().getId());
             preparedStatement.setString(3, card.getCustomName());
@@ -103,12 +88,41 @@ public class CardDaoImpl implements CardDao {
             return card;
         } catch (SQLException e) {
             throw new UpdateCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
+        }
+    }
+    @Override
+    public List<Card> transferCard(Card from, Card to) throws UpdateCardException{
+        List<Card> cards = new ArrayList<>();
+        try(Connection connection = getConnection();
+        PreparedStatement preparedStatementFrom = connection.prepareStatement(QUERY_UPDATE_CARD);
+        PreparedStatement preparedStatementTo = connection.prepareStatement(QUERY_UPDATE_CARD)){
+            preparedStatementFrom.setInt(1,from.getBalance());
+            preparedStatementFrom.setInt(2,from.getCardStatus().getId());
+            preparedStatementFrom.setString(3,from.getCustomName());
+            preparedStatementFrom.setInt(4,from.getId());
+            connection.setAutoCommit(false);
+            Savepoint savepointFrom = connection.setSavepoint();
+            int iFrom = preparedStatementFrom.executeUpdate();
+            if(iFrom!=1){
+                connection.rollback();
+                throw new UpdateCardException();
             }
+            connection.commit();
+            preparedStatementTo.setInt(1,to.getBalance());
+            preparedStatementTo.setInt(2,to.getCardStatus().getId());
+            preparedStatementTo.setString(3,to.getCustomName());
+            preparedStatementTo.setInt(4,to.getId());
+            int iTo = preparedStatementTo.executeUpdate();
+            if(iTo!=1){
+                connection.rollback(savepointFrom);
+                throw new UpdateCardException();
+            }
+            connection.commit();
+            cards.add(from);
+            cards.add(to);
+            return cards;
+        }catch (SQLException e){
+            throw new UpdateCardException(e.getMessage(),e);
         }
     }
 
@@ -120,7 +134,8 @@ public class CardDaoImpl implements CardDao {
     @Override
     public List<Card> getCards(Client client) throws ReadCardException {
         List<Card> cards = new ArrayList<>();
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID)) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID)) {
             preparedStatement.setInt(1, client.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -136,18 +151,13 @@ public class CardDaoImpl implements CardDao {
             return cards;
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
     @Override
     public List<Card> getCardsOnPage(Client client, int start, int end) throws ReadCardException{
         List<Card> cards = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_SHOW_CARD_PAGE)){
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_SHOW_CARD_PAGE)){
             preparedStatement.setInt(1,client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -169,12 +179,6 @@ public class CardDaoImpl implements CardDao {
             }
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
         return cards;
     }
@@ -187,7 +191,8 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getCardsSortedById(Client client,int start, int end) throws ReadCardException{
 
         List<Card> cards = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_NAME)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_NAME)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -210,19 +215,14 @@ public class CardDaoImpl implements CardDao {
             return cards;
         } catch (SQLException e)  {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Card> getCardsSortedByName(Client client, int start, int end) throws ReadCardException {
         List<Card> cards = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_CUSTOM_NAME)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_CUSTOM_NAME)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -245,19 +245,14 @@ public class CardDaoImpl implements CardDao {
             return cards;
         } catch (SQLException e)  {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Card> getCardsSortedByBalance(Client client, int start, int end) throws ReadCardException{
         List<Card> cards = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_BALANCE)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_BALANCE)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
@@ -280,35 +275,25 @@ public class CardDaoImpl implements CardDao {
             return cards;
         } catch (SQLException e)  {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public String getLastCardName() throws ReadCardException{
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_LAST_CARD_NAME)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_LAST_CARD_NAME)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return resultSet.getString("name");
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Card> getCardsToUnblock(int start, int end) throws ReadCardException{
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CARDS_READY_TO_UNBLOCK)) {
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_READY_TO_UNBLOCK)) {
             preparedStatement.setInt(1,start);
             preparedStatement.setInt(2,end);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -331,25 +316,18 @@ public class CardDaoImpl implements CardDao {
             return cards;
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
-        }finally{
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
     /**
      * gets connection
      * */
-    private  Connection getConnection() {
-        try {
-            InitialContext initContext= new InitialContext();
-            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-            conn = ds.getConnection();
-            return  conn;
-        } catch (SQLException | NamingException e) {
-            throw new ConnectionException("Fail to obtain connection..", e);
-        }
+    private DataSource ds;
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return ds.getConnection();
     }
 }

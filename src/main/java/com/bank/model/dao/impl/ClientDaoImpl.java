@@ -20,7 +20,6 @@ import java.util.List;
 public class ClientDaoImpl implements ClientDao {
 
     // change to yours
-    private  Connection conn;
     private int noOfRecords;
 
     // queries
@@ -34,13 +33,11 @@ public class ClientDaoImpl implements ClientDao {
 
     public ClientDaoImpl() {
     }
-    public ClientDaoImpl(Connection connection){
-       conn = connection;
-    }
 
     @Override
     public Client create(Client client) throws CreateClientException{
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_CREATE_CLIENT)) {
+        try(Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CREATE_CLIENT)) {
             preparedStatement.setString(1, client.getLogin());
             preparedStatement.setString(2, client.getPassword());
             preparedStatement.setInt(3, client.getClientStatus().getId());
@@ -57,7 +54,8 @@ public class ClientDaoImpl implements ClientDao {
     @Override
     public Client read(Integer id) throws ReadClientException {
         Client client = new Client();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CLIENT_BY_ID)) {
+        try(Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CLIENT_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -69,18 +67,13 @@ public class ClientDaoImpl implements ClientDao {
             return client;
         } catch (SQLException e) {
             throw new ReadClientException(e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public Client update(Client client) throws UpdateClientException {
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_UPDATE_CLIENT)) {
+        try(Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QUERY_UPDATE_CLIENT)) {
             preparedStatement.setInt(1, client.getClientStatus().getId());
             preparedStatement.setInt(2, client.getId());
             int i = preparedStatement.executeUpdate();
@@ -89,12 +82,6 @@ public class ClientDaoImpl implements ClientDao {
             return client;
         } catch (SQLException e) {
             throw new UpdateClientException(e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
@@ -106,7 +93,8 @@ public class ClientDaoImpl implements ClientDao {
     @Override
     public Client getClient(String login) throws ReadClientException {
         Client client = new Client();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CLIENT_BY_LOGIN)) {
+        try(Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CLIENT_BY_LOGIN)) {
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -118,19 +106,14 @@ public class ClientDaoImpl implements ClientDao {
             return client;
         } catch (SQLException e) {
             throw new ReadClientException(e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
 
     @Override
     public List<Client> getClients(int start, int end) throws ReadClientException {
         List<Client> clients = new ArrayList<>();
-        try(PreparedStatement preparedStatement = getConnection().prepareStatement(QUERY_READ_CLIENTS)) {
+        try(Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CLIENTS)) {
             preparedStatement.setInt(1,start);
             preparedStatement.setInt(2,end);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -151,12 +134,6 @@ public class ClientDaoImpl implements ClientDao {
             return clients;
         } catch (SQLException e) {
             throw new ReadClientException(e);
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new ConnectionException(e.getMessage(),e);
-            }
         }
     }
     @Override
@@ -167,14 +144,12 @@ public class ClientDaoImpl implements ClientDao {
     /**
      * gets connection
      * */
-    public  Connection getConnection() {
-        try {
-            InitialContext initContext = new InitialContext();
-            DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/mysql/bank");
-            conn = ds.getConnection();
-            return conn;
-        } catch (NamingException | SQLException e) {
-            throw new ConnectionException("Fail to obtain connection..", e);
-        }
+    private Connection getConnection() throws SQLException {
+        return ds.getConnection();
+    }
+
+    private DataSource ds;
+    public void setDs(DataSource ds) {
+        this.ds = ds;
     }
 }

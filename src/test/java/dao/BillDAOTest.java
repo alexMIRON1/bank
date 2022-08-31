@@ -1,7 +1,10 @@
 package dao;
 
 import com.bank.model.dao.BillDao;
+import com.bank.model.dao.ClientDao;
 import com.bank.model.dao.impl.BillDaoImpl;
+import com.bank.model.dao.impl.DaoEnum;
+import com.bank.model.dao.impl.FactoryDao;
 import com.bank.model.entity.Bill;
 import com.bank.model.entity.BillStatus;
 import com.bank.model.entity.Card;
@@ -9,7 +12,12 @@ import com.bank.model.exception.bill.CreateBillException;
 import com.bank.model.exception.bill.DeleteBillException;
 import com.bank.model.exception.bill.ReadBillException;
 import com.bank.model.exception.bill.UpdateBillException;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.*;
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import static org.junit.Assert.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,6 +26,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class BillDAOTest {
+    private static final FactoryDao factoryDao = FactoryDao.getInstance();
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306";
     private static final String CONNECTION_ToDB_URL = "jdbc:mysql://localhost:3306/testDB";
     private static final String CREATE_DATABASE = "CREATE SCHEMA testDB";
@@ -27,14 +36,14 @@ public class BillDAOTest {
             "(DEFAULT, ?, DEFAULT, ?, ?)";
     private static Connection connection;
     @BeforeClass
-    public static void globalSetUp() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
+    public static void globalSetUp() throws SQLException{
+        connection = getDsCreateSchema().getConnection();
         connection.prepareStatement(CREATE_DATABASE).execute();
         connection.close();
     }
     @AfterClass
     public static void globalTearDown() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
+        connection = getDsCreateSchema().getConnection();
         connection.prepareStatement("drop schema if exists testDB").execute();
         connection.close();
     }
@@ -63,6 +72,7 @@ public class BillDAOTest {
     public void testCreate() throws CreateBillException {
         bill.setSum(200);
         bill.setBillStatus(BillStatus.READY);
+        bill.setRecipient("0000");
         Bill testBill = billDao.create(bill);
         assertEquals(bill.getSum(),testBill.getSum());
         assertEquals(bill.getId(),testBill.getId());
@@ -92,6 +102,7 @@ public class BillDAOTest {
     @Test
     public void testUpdate() throws UpdateBillException {
         bill.setBillStatus(BillStatus.PAID);
+        bill.setRecipient("0000");
         Bill testBill = billDao.update(bill);
         assertEquals(bill.getSum(),testBill.getSum());
         assertEquals(bill.getId(),testBill.getId());
@@ -119,6 +130,7 @@ public class BillDAOTest {
         bill.setBillStatus(BillStatus.PAID);
         bill.setSum(500);
         bill.setId(2);
+        bill.setRecipient("0000");
         billDao.create(bill);
         connectionToTestDB();
         List<Bill> bills = new ArrayList<>();
@@ -142,6 +154,7 @@ public class BillDAOTest {
         bill.setBillStatus(BillStatus.PAID);
         bill.setSum(500);
         bill.setId(2);
+        bill.setRecipient("0000");
         billDao.create(bill);
         connectionToTestDB();
         List<Bill> bills = new ArrayList<>();
@@ -166,6 +179,7 @@ public class BillDAOTest {
         bill.setBillStatus(BillStatus.PAID);
         bill.setSum(500);
         bill.setId(2);
+        bill.setRecipient("0000");
         billDao.create(bill);
         connectionToTestDB();
         List<Bill> bills = new ArrayList<>();
@@ -190,6 +204,7 @@ public class BillDAOTest {
         bill.setBillStatus(BillStatus.PAID);
         bill.setSum(500);
         bill.setId(2);
+        bill.setRecipient("0000");
         billDao.create(bill);
         connectionToTestDB();
         List<Bill> bills = new ArrayList<>();
@@ -219,7 +234,23 @@ public class BillDAOTest {
         return creatingBill;
     }
     private void connectionToTestDB() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_ToDB_URL,"root","root");
-        billDao = new BillDaoImpl(connection);
+        billDao = (BillDao) factoryDao.getDao(DaoEnum.BILL_DAO);
+        billDao.setDs(getDs());
+        connection = getDs().getConnection();
+    }
+
+    private DataSource getDs() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_ToDB_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
+    }
+    private static DataSource getDsCreateSchema() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
     }
 }

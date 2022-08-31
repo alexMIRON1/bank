@@ -1,12 +1,20 @@
 package dao;
 
 import com.bank.model.dao.CardDao;
+import com.bank.model.dao.ClientDao;
 import com.bank.model.dao.impl.CardDaoImpl;
+import com.bank.model.dao.impl.DaoEnum;
+import com.bank.model.dao.impl.FactoryDao;
 import com.bank.model.entity.*;
 import com.bank.model.exception.card.CreateCardException;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.*;
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import static org.junit.Assert.*;
 
 import java.sql.*;
@@ -15,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CardDAOTest {
+    private static final FactoryDao factoryDao = FactoryDao.getInstance();
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306";
     private static final String CONNECTION_ToDB_URL = "jdbc:mysql://localhost:3306/testDB";
     private static final String CREATE_DATABASE = "CREATE SCHEMA testDB";
@@ -29,14 +38,14 @@ public class CardDAOTest {
             "values(DEFAULT, ?, ?, DEFAULT, 1, 2 )";
     private static Connection connection;
     @BeforeClass
-    public static void globalSetUp() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
+    public static void globalSetUp() throws SQLException{
+        connection = getDsCreateSchema().getConnection();
         connection.prepareStatement(CREATE_DATABASE).execute();
         connection.close();
     }
     @AfterClass
     public static void globalTearDown() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
+        connection = getDsCreateSchema().getConnection();
         connection.prepareStatement("drop schema if exists testDB").execute();
         connection.close();
     }
@@ -266,7 +275,23 @@ public class CardDAOTest {
         return client;
     }
     private void connectionToTestDB() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_ToDB_URL,"root","root");
-        cardDao = new CardDaoImpl(connection);
+        cardDao = (CardDao) factoryDao.getDao(DaoEnum.CARD_DAO);
+        cardDao.setDs(getDs());
+        connection = getDs().getConnection();
+    }
+
+    private DataSource getDs() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_ToDB_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
+    }
+    private static DataSource getDsCreateSchema() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
     }
 }

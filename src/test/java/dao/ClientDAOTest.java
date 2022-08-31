@@ -2,6 +2,8 @@ package dao;
 
 import com.bank.model.dao.ClientDao;
 import com.bank.model.dao.impl.ClientDaoImpl;
+import com.bank.model.dao.impl.DaoEnum;
+import com.bank.model.dao.impl.FactoryDao;
 import com.bank.model.entity.Client;
 import com.bank.model.entity.ClientStatus;
 import com.bank.model.entity.Role;
@@ -29,6 +31,7 @@ import java.util.Properties;
 import static org.junit.Assert.assertEquals;
 
 public class ClientDAOTest {
+    private static final FactoryDao factoryDao = FactoryDao.getInstance();
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306";
     private static final String CONNECTION_ToDB_URL = "jdbc:mysql://localhost:3306/testDB";
     private static final String CREATE_DATABASE = "CREATE SCHEMA testDB";
@@ -40,14 +43,14 @@ public class ClientDAOTest {
     private static Connection connection;
 
     @BeforeClass
-    public static void globalSetUp() throws SQLException, NamingException {
-       connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
-       connection.prepareStatement(CREATE_DATABASE).execute();
-       connection.close();
+    public static void globalSetUp() throws SQLException {
+        connection = getDsCreateSchema().getConnection();
+        connection.prepareStatement(CREATE_DATABASE).execute();
+        connection.close();
     }
     @AfterClass
     public static void globalTearDown() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_URL,"root","root");
+        connection = getDsCreateSchema().getConnection();
         connection.prepareStatement("drop schema if exists testDB").execute();
         connection.close();
     }
@@ -166,7 +169,23 @@ public class ClientDAOTest {
         return client;
     }
     private void connectionToTestDB() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTION_ToDB_URL,"root","root");
-        clientDao = new ClientDaoImpl(connection);
+        clientDao = (ClientDao) factoryDao.getDao(DaoEnum.CLIENT_DAO);
+        clientDao.setDs(getDs());
+        connection = getDs().getConnection();
+    }
+
+    private DataSource getDs() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_ToDB_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
+    }
+    private static DataSource getDsCreateSchema() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setUrl(CONNECTION_URL);
+        ds.setUser("root");
+        ds.setPassword("root");
+        return ds;
     }
 }

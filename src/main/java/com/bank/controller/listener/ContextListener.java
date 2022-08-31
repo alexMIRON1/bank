@@ -15,12 +15,11 @@ import com.bank.controller.service.admin.impl.UnblockServiceImpl;
 import com.bank.controller.service.client.*;
 import com.bank.controller.service.client.impl.*;
 import com.bank.controller.service.impl.*;
+import com.bank.model.connection.ConnectionPool;
 import com.bank.model.dao.BillDao;
 import com.bank.model.dao.CardDao;
 import com.bank.model.dao.ClientDao;
-import com.bank.model.dao.impl.BillDaoImpl;
-import com.bank.model.dao.impl.CardDaoImpl;
-import com.bank.model.dao.impl.ClientDaoImpl;
+import com.bank.model.dao.impl.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -33,18 +32,21 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class ContextListener implements ServletContextListener, HttpSessionListener {
     private static final Logger LOG = LogManager.getLogger(ContextListener.class);
+    private static final FactoryDao factoryDao = FactoryDao.getInstance();
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         LOG.info("Start context initialization");
-        ServletContext context = sce.getServletContext();
-        initializeServices(context);
+        initializeServices();
         LOG.info("Services initialized");
     }
-    private void initializeServices(ServletContext servletContext){
-        ClientDao clientDao = new ClientDaoImpl();
-        CardDao cardDao = new CardDaoImpl();
-        BillDao billDao = new BillDaoImpl();
+    private void initializeServices(){
+        ClientDao clientDao = (ClientDao) factoryDao.getDao(DaoEnum.CLIENT_DAO);
+        CardDao cardDao = (CardDao) factoryDao.getDao(DaoEnum.CARD_DAO);
+        BillDao billDao = (BillDao) factoryDao.getDao(DaoEnum.BILL_DAO);
+        clientDao.setDs(ConnectionPool.getDs());
+        billDao.setDs(ConnectionPool.getDs());
+        cardDao.setDs(ConnectionPool.getDs());
         CommandContainer container = new CommandContainer();
         //create services
         //loginPage

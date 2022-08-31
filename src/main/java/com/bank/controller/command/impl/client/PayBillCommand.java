@@ -30,12 +30,15 @@ public class PayBillCommand implements Command {
     public String execute(HttpServletRequest request) {
         Page page = (Page) request.getSession().getAttribute("page");
         Integer billId = Integer.parseInt(request.getParameter("bill"));
+        String idToCard = request.getParameter("toCard");
+        Integer idCard = Integer.parseInt(idToCard.replace("0",""));
         try {
             Bill bill = billsService.read(billId);
             Card card = billsService.fillCard(bill.getCard().getId());
-            billsService.updateCard(card,bill);
+            Card cardTo = billsService.fillCard(idCard);
+            billsService.updateCard(card,cardTo,bill);
             LOG.info("card was successfully update");
-            billsService.updateBill(bill,card);
+            billsService.updateBill(bill,card,cardTo);
             LOG.info("bill was successfully update");
             List<Bill> bills = billsService.getBills(card);
             request.getSession().setAttribute("currentCard", card);
@@ -56,7 +59,7 @@ public class PayBillCommand implements Command {
             return "/error.jsp";
         } catch (NotEnoughException e) {
             //watch BillsServiceImpl that get problem
-            LOG.debug("fail to obtain bill--> not enough money on bill");
+            LOG.debug("fail to obtain bill--> not enough money on bill" + billId);
             return "/error.jsp";
         }
     }

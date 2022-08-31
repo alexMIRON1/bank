@@ -74,4 +74,32 @@ function matchSetName(){
         return  false;
     }
 }
+function matchEmail(){
+    const name = document.getElementById('email').value
+    var reg =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if(name.match(reg)){
+        document.getElementById('messageEmail').innerHTML = '';
+        document.getElementById('buttonEmail').disabled = false;
+        return true;
+    }else {
+        document.getElementById('messageEmail').style.color = 'red';
+        document.getElementById('messageEmail').innerHTML = '<fmt:message key="validation.message.email"/>'
+        document.getElementById('buttonEmail').disabled = true;
+        return false;
+    }
+}
+function matchPayBill(){
+    const name = document.getElementById('toCard').value
+    var reg = /^[0-9]{4}$/
+    if(name.match(reg)){
+        document.getElementById('messagePay').innerHTML = '';
+        document.getElementById('buttonPay').disabled = false;
+        return true;
+    }else{
+        document.getElementById('messagePay').style.color = 'red';
+        document.getElementById('messagePay').innerHTML = '<fmt:message key="validation.message.pay"/>'
+        document.getElementById('buttonPay').disabled = true;
+        return false;
+    }
+}
 </script>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
+<%@ taglib prefix = "cur" uri = "/WEB-INF/jstl-tld/custom.tld"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
 <html>
@@ -8,7 +9,7 @@
 </head>
 <body>
 <%@include  file="fragments/header.jspf" %>
-<br>
+<p class="fw-bolder"><cur:Currency/></p>
 <c:choose>
     <c:when test="${client.role.id eq 2 || client.role.id eq 1 }">
         <br>
@@ -62,17 +63,18 @@
                     <th scope="col"><fmt:message key="payments.table.sum"/></th>
                     <th scope="col"><fmt:message key="payments.table.date"/></th>
                     <th scope="col"><fmt:message key="payments.table.status"/></th>
+                    <th scope="col"><fmt:message key="payments.table.recipient"/></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:forEach var="bill" items="${bills}">
-                    <div class="modal fade" id="windowModalCenter" tabindex="-1" role="dialog" aria-labelledby="windowModalCenterTitle" aria-hidden="true">
+                    <div class="modal fade" id="windowModalCenter3" tabindex="-1" role="dialog" aria-labelledby="windowModalCenter3Title" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="windowModalLongTitle">Bill name</h5>
+                                    <h5 class="modal-title" id="windowModalLongTitle3"><fmt:message key="payments.modal.title"/></h5>
                                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -81,9 +83,10 @@
                                     <div class="modal-body">
                                         <form action="../bank/receipt" method="post">
                                             <input type="text" value="${bill.id}" name="bill" hidden>
-                                            <input type="email" id = "email" name="email">
-                                            <button type="submit" id = "buttonName" class="btn btn-success">Send</button><br>
-                                            <label class="form-label text-start" for="email">Input email</label>
+                                            <input type="email" id = "email" name="email" onkeyup="matchEmail()">
+                                            <button type="submit" id = "buttonEmail" class="btn btn-success" onclick="matchEmail()"><fmt:message key="payments.modal.button.send"/></button><br>
+                                            <label class="form-label text-start" for="email"><fmt:message key="payments.modal.input.email"/></label><br>
+                                            <span id="messageEmail"></span>
                                         </form><br>
                                     </div>
                                 </div>
@@ -94,7 +97,7 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="windowModalLongTitle2">Pay bill</h5>
+                                    <h5 class="modal-title" id="windowModalLongTitle2"><fmt:message key="payments.modal.pay"/></h5>
                                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -103,9 +106,10 @@
                                     <div class="modal-body">
                                         <form action="../bank/pay-bill" method="post">
                                             <input type="text" value="${bill.id}" name="bill" hidden>
-                                            <input type="text" id = "text" name="text">
-                                            <button type="submit" id = "buttonPay" class="btn btn-success">Pay</button><br>
-                                            <label class="form-label text-start" for="email">Input id card</label>
+                                            <input type="text" id = "toCard" name="toCard" onkeyup="matchPayBill()">
+                                            <button type="submit" id = "buttonPay" class="btn btn-success" onclick="matchPayBill()"><fmt:message key="payments.modal.button.pay"/></button><br>
+                                            <label class="form-label text-start" for="email"><fmt:message key="payments.modal.input.id"/></label><br>
+                                            <span id="messagePay"></span>
                                         </form><br>
                                     </div>
                                 </div>
@@ -117,9 +121,9 @@
                         <td>${bill.sum}</td>
                         <td>${bill.date}</td>
                         <td>${bill.billStatus.status}</td>
+                        <td>${bill.recipient}</td>
                         <td><c:if test="${bill.billStatus.status eq 'ready'}">
-                            <a href="#" class="fw-bold text-body" data-bs-toggle="modal" data-bs-target="#windowModalCenter2" data-bs-whatever="${bill.id}"><fmt:message key="payments.table.pay"/></a>
-                            <a href="../bank/pay-bill?bill=${bill.id}" class="fw-bold text-body"><fmt:message key="payments.table.pay"/></a> <br>
+                            <a href="#" class="fw-bold text-body" data-bs-toggle="modal" data-bs-target="#windowModalCenter2" data-bs-whatever="${bill.id}"><fmt:message key="payments.table.pay"/></a><br>
                             <a href="../bank/delete?bill=${bill.id}" class="fw-bold text-body"><fmt:message key="payments.table.delete"/></a><br>
                         </c:if>
                             <c:if test="${bill.billStatus.status eq 'paid'}">
@@ -127,7 +131,7 @@
                                 <a href="../bank/delete?bill=${bill.id}" class="fw-bold text-body"><fmt:message key="payments.table.delete"/></a><br>
                             </c:if></td>
                         <c:if test="${bill.billStatus.status eq 'paid'}">
-                            <td><a href="#" class="fw-bold text-body" data-bs-toggle="modal" data-bs-target="#windowModalCenter" data-bs-whatever="${bill.id}"><fmt:message key="payments.table.receipt"/></a></td>
+                            <td><a href="#" class="fw-bold text-body" data-bs-toggle="modal" data-bs-target="#windowModalCenter3" data-bs-whatever="${bill.id}"><fmt:message key="payments.table.receipt"/></a></td>
                         </c:if>
                     </tr>
                 </c:forEach>
@@ -190,14 +194,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 <jsp:include page="validation.jsp"/>
 <script>
-    var exampleModal = document.getElementById('windowModalCenter')
-    exampleModal.addEventListener('show.bs.modal', function (event) {
+    var modalEmail = document.getElementById('windowModalCenter3')
+    modalEmail.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget
         var id = button.getAttribute('data-bs-whatever');
-        var modalTitle = exampleModal.querySelector('.modal-title')
-        var modalBodyInput = exampleModal.querySelector('.modal-body input')
-
+        var modalTitle = modalEmail.querySelector('.modal-title')
+        var modalBodyInput = modalEmail.querySelector('.modal-body input')
         modalTitle.textContent = '<fmt:message key="payments.modal.title"/>  ' + id;
+        modalBodyInput.value = id
+    })
+</script>
+<script>
+    var modalPay = document.getElementById('windowModalCenter2')
+    modalPay.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget
+        var id = button.getAttribute('data-bs-whatever');
+        var modalTitle = modalPay.querySelector('.modal-title')
+        var modalBodyInput = modalPay.querySelector('.modal-body input')
+
+        modalTitle.textContent = '<fmt:message key="payments.modal.pay"/>  ' + id;
         modalBodyInput.value = id
     })
 </script>

@@ -39,7 +39,7 @@ public class BillsServiceImpl implements BillsService {
     }
 
     @Override
-    public void updateCard(Card card, Bill bill) throws UpdateCardException, NotEnoughException{
+    public void updateCard(Card card, Card cardTo, Bill bill) throws UpdateCardException, NotEnoughException{
         if(card.getBalance() - bill.getSum()<0){
             LOG.debug("not enough money");
             throw new NotEnoughException();
@@ -49,17 +49,24 @@ public class BillsServiceImpl implements BillsService {
             throw new UpdateCardException();
         }
         card.setBalance(card.getBalance() - bill.getSum());
-        cardDao.update(card);
+        if(cardTo.getBalance()+bill.getSum()<0){
+            LOG.debug("reached max value on card recipient");
+            throw new UpdateCardException();
+        }
+        cardTo.setBalance(cardTo.getBalance() + bill.getSum());
+        cardDao.transferCard(card,cardTo);
+//        cardDao.update(card);
     }
 
     @Override
-    public void updateBill(Bill bill, Card card) throws UpdateBillException {
+    public void updateBill(Bill bill, Card card, Card cardTo) throws UpdateBillException {
         if(bill.getId() == 0 || card.getId() ==0){
             LOG.debug("card or bill do not exist");
             throw new UpdateBillException();
         }
         bill.setBillStatus(BillStatus.PAID);
         bill.setCard(card);
+        bill.setRecipient(cardTo.getName());
         billDao.update(bill);
     }
 

@@ -72,6 +72,7 @@ public class Tables {
             "                                             `date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "                                             `card_id` INT UNSIGNED NOT NULL,\n" +
             "                                             `bill_status_id` INT UNSIGNED NOT NULL,\n" +
+            "`recipient` VARCHAR(45),"+
             "                                             PRIMARY KEY (`id`),\n" +
             "    UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,\n" +
             "    INDEX `fk_bill_card1_idx` (`card_id` ASC) VISIBLE,\n" +
