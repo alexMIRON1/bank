@@ -7,6 +7,18 @@ import com.bank.model.exception.card.UpdateCardException;
 import java.sql.SQLException;
 
 public interface UnblockService {
+    /**
+     * get card
+     * @param id card's id
+     * @return card
+     * @throws ReadCardException when card does not exist
+     */
     Card read(Integer id) throws ReadCardException;
+
+    /**
+     * updating card
+     * @param card for updating
+     * @throws UpdateCardException when wrong data for updating
+     */
     void update(Card card) throws UpdateCardException;
 }

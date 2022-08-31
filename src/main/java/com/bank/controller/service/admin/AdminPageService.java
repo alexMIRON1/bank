@@ -11,10 +11,36 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface AdminPageService {
+    /**
+     * list of clients
+     * @param page number page
+     * @return get clients
+     * @throws ReadClientException when client does not exist
+     */
     List<Client> getClients(Page page) throws ReadClientException;
-    List<Card> getCards(Page page) throws ReadCardException;
-    Client fillClient(Integer id) throws ReadClientException;
 
+    /**
+     * list of cards
+     * @param number page
+     * @return get cards
+     * @throws ReadCardException when card does not exist
+     */
+    List<Card> getCards(Page page) throws ReadCardException;
+    /**
+     * get client
+     * @param id client's id
+     * @return client
+     * @throws ReadClientException when client does not exist
+     */
+    Client fillClient(Integer id) throws ReadClientException;
+    /**
+     * get records for client which do not fit on page
+     * @return number of no records for client
+     */
     int getNoOfRecords();
+    /**
+     * get records for cards which do not fit on page
+     * @return number of no records for cards
+     */
     int getNoOfRecordsCard();
 }

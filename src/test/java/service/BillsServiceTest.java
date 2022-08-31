@@ -67,10 +67,14 @@ public class BillsServiceTest {
     public void testUpdateCard() throws UpdateCardException, NotEnoughException {
         Card testCard = Entity.createCard();
         Card toCard = Entity.createCard();
+        Card testToCard = Entity.createCard();
         toCard.setBalance(10);
+        testToCard.setBalance(10);
         billsService.updateCard(testCard,toCard,bill);
         card.setBalance(card.getBalance()-bill.getSum());
+        testToCard.setBalance(testToCard.getBalance()+bill.getSum());
         assertEquals(testCard.getBalance(),card.getBalance());
+        assertEquals(toCard.getBalance(),testToCard.getBalance());
     }
     @Test(expected = UpdateCardException.class)
     public void testWrongIdCardUpdateCard() throws UpdateCardException, NotEnoughException {

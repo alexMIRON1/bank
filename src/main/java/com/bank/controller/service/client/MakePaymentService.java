@@ -6,5 +6,14 @@ import com.bank.model.entity.Card;
 import com.bank.model.exception.bill.CreateBillException;
 
 public interface MakePaymentService{
+    /**
+     * create bill
+     * @param bill new bill
+     * @param sum set sum bill
+     * @param card set card bill
+     * @return new bill
+     * @throws CreateBillException when wrong data for creating bill
+     * @throws CardBannedException when card is banned
+     */
     Bill create(Bill bill, Integer sum, Card card) throws CreateBillException, CardBannedException;
 }

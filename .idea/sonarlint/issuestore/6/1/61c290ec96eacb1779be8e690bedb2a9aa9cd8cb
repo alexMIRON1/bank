@@ -1,7 +1,0 @@
-
-T
-java:S1128"9Remove this unused import 'com.bank.model.entity.Client'.(Áî—Ýûÿÿÿÿ
-f
-java:S1128"PRemove this unused import 'com.bank.model.exception.client.ReadClientException'.(ë Æƒ
-H
-java:S1128	"2Remove this unused import 'java.sql.SQLException'.(ÛïÆŸ

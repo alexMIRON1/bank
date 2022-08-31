@@ -8,6 +8,19 @@ import com.bank.model.exception.card.ReadCardException;
 import java.sql.SQLException;
 
 public interface ReceiveCardService {
+    /**
+     * create card
+     * @param card new card
+     * @param client client who owes card
+     * @throws CreateCardException when wrong data for creating
+     * @throws ReadCardException card does not exist
+     */
     void create(Card card, Client client) throws CreateCardException, ReadCardException;
+
+    /**
+     * create name card
+     * @return new card name
+     * @throws ReadCardException when card does not exist
+     */
     String getCardLastName() throws ReadCardException;
 }
