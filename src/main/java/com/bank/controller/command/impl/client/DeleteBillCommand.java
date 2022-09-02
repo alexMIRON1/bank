@@ -29,7 +29,7 @@ public class DeleteBillCommand implements Command {
             Bill bill = billsService.read(billId);
             Card card = billsService.fillCard(bill.getCard().getId());
             billsService.delete(bill.getId());
-            LOG.info("Bill with id = " + billId + " was successfully delete");
+            LOG.debug("Bill with id = " + billId + " was successfully delete");
             return "redirect:/bank/payments?page=" + page.getNumber() + "&card=" + card.getId();
         } catch (DeleteBillException e) {
             LOG.debug("fail to delete bill-->wrong id");

@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 public interface Dao {
     /**
      * set dataSource for connection
-     * @param dataSource
+     * @param dataSource for connection
      * **/
     void setDs(DataSource dataSource);
 }

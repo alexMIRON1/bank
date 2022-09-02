@@ -10,7 +10,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 
 public class RequestToUnblockCommand implements Command {
     private final CardsService cardsService;
@@ -27,7 +26,7 @@ public class RequestToUnblockCommand implements Command {
         try {
             Card card = cardsService.read(cardId);
             cardsService.updateStatus(card);
-            LOG.info("request was successfully sent");
+            LOG.debug("request was successfully sent");
         } catch (ReadCardException e) {
             // such card does not exist
             LOG.debug("fail to change status card because does not exist");

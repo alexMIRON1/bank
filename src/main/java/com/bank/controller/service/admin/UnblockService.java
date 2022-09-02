@@ -4,7 +4,6 @@ import com.bank.model.entity.Card;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 
-import java.sql.SQLException;
 
 public interface UnblockService {
     /**

@@ -10,7 +10,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 
 public class BlockCardCommand implements Command {
     private static final Logger LOG = LogManager.getLogger(BlockCardCommand.class);
@@ -28,7 +27,7 @@ public class BlockCardCommand implements Command {
         try {
             Card card = cardsService.read(cardId);
             cardsService.updateStatus(card);
-            LOG.info("card was successfully update");
+            LOG.debug("card was successfully update");
         } catch (ReadCardException e) {
             // such card does not exist
             LOG.debug("fail to block card because does not exist");

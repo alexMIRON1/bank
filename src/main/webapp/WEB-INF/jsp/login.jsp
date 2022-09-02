@@ -1,6 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
-<%@ taglib prefix = "cur" uri = "/WEB-INF/jstl-tld/custom.tld"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
 <html>
@@ -9,7 +8,6 @@
 </head>
 <body>
 <%@include  file="fragments/header.jspf" %>
-<p class="fw-bolder"><cur:Currency/></p>
 <section class="vh-100 bg-image"
          style="background-image: url('https://mdbcdn.b-cdn.net/img/new/fluid/city/055.webp');">
     <div class="mask d-flex align-items-center h-100 gradient-custom-3">

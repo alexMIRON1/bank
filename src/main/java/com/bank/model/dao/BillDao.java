@@ -7,7 +7,6 @@ import com.bank.model.exception.bill.CreateBillException;
 import com.bank.model.exception.bill.DeleteBillException;
 import com.bank.model.exception.bill.ReadBillException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

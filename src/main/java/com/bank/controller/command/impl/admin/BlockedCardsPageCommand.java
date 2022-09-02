@@ -27,7 +27,7 @@ public class BlockedCardsPageCommand implements Command {
         page.setRecords(5);
         if(request.getParameter("page")!=null){
             page.setNumberPage(Integer.parseInt(request.getParameter("page")));
-            LOG.info("page = " + page.getNumber());
+            LOG.debug("page = " + page.getNumber());
         }
         try {
            List<Card> cards = adminPageService.getCards(page);
@@ -48,7 +48,7 @@ public class BlockedCardsPageCommand implements Command {
             LOG.debug("clients are not obtained");
             return "/error.jsp";
         }
-        LOG.info("page was successfully got");
+        LOG.debug("page was successfully got");
         return "/blockedCards.jsp";
     }
 }

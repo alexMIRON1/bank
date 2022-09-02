@@ -26,7 +26,7 @@ public class ReceiveCardServiceImpl implements ReceiveCardService {
             throw new CreateCardException();
         }
         card.setName(generateName());
-        card.setCustomName("");
+        card.setCustomName("default");
         card.setBalance(100);
         card.setCardStatus(CardStatus.UNBLOCKED);
         card.setClient(client);

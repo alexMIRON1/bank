@@ -6,7 +6,6 @@ import com.bank.model.exception.client.DeleteClientException;
 import com.bank.model.exception.client.ReadClientException;
 import com.bank.model.exception.client.UpdateClientException;
 
-import java.sql.Connection;
 import java.util.List;
 
 /**

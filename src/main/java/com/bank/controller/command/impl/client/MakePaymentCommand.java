@@ -31,7 +31,7 @@ public class MakePaymentCommand implements Command {
         try {
             Bill bill = new Bill();
             makePaymentService.create(bill,sum,card);
-            LOG.info("payment was successfully created");
+            LOG.debug("payment was successfully created");
         } catch (CreateBillException e) {
             // such bill already exist
             LOG.debug("fail to create bill");

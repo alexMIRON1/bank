@@ -7,7 +7,6 @@ import com.bank.model.exception.card.DeleteCardException;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -80,11 +79,7 @@ public interface CardDao extends Dao {
      * */
 
     int getNoOfRecords();
-    /**
-     * gets last card's name
-     * @return String the last card's name
-     * @throws ReadCardException in case when cards was not read
-     * */
+
     /**
      * gets client's cards sorted by id
      * @param client the client

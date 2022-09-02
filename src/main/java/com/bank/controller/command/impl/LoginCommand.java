@@ -31,8 +31,9 @@ public class LoginCommand implements Command {
 
         try {
             Client client = authorizedService.get(login,password);
+            request.getSession().setAttribute("role",client.getRole());
             request.getSession().setAttribute("client", client);
-            LOG.info(login + " successfully entered");
+            LOG.debug(login + " successfully entered");
             if(login.equals("admin")){
                 return "redirect:/bank/admin";
             }

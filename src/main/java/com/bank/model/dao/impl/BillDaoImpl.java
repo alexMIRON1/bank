@@ -4,14 +4,11 @@ import com.bank.model.dao.BillDao;
 import com.bank.model.entity.Bill;
 import com.bank.model.entity.BillStatus;
 import com.bank.model.entity.Card;
-import com.bank.model.exception.ConnectionException;
 import com.bank.model.exception.bill.CreateBillException;
 import com.bank.model.exception.bill.DeleteBillException;
 import com.bank.model.exception.bill.ReadBillException;
 import com.bank.model.exception.bill.UpdateBillException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,8 +27,10 @@ public class BillDaoImpl implements BillDao {
     private static final String QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? ORDER BY date DESC LIMIT ?, ?";
     private static final String QUERY_SHOW_BILLS = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? LIMIT ?, ?";
     private static final String QUERY_DELETE_BILL = "DELETE FROM bill WHERE id=?";
-    public BillDaoImpl() {
-    }
+    private static final String ID_CARD = "card_id";
+    private static final String BILL_STATUS_ID = "bill_status_id";
+    private static final String RECIPIENT = "recipient";
+    private static final String SELECT_ROWS = "SELECT FOUND_ROWS()";
 
     @Override
     public Bill create(Bill bill) throws CreateBillException {
@@ -61,9 +60,9 @@ public class BillDaoImpl implements BillDao {
             bill.setId(resultSet.getInt("id"));
             bill.setSum(resultSet.getInt("sum"));
             bill.setDate(resultSet.getDate("date"));
-            bill.setCard(new Card(resultSet.getInt("card_id")));
-            bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-            bill.setRecipient(resultSet.getString("recipient"));
+            bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+            bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+            bill.setRecipient(resultSet.getString(RECIPIENT));
             return bill;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
@@ -112,9 +111,9 @@ public class BillDaoImpl implements BillDao {
                 bill.setId(resultSet.getInt("id"));
                 bill.setSum(resultSet.getInt("sum"));
                 bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt("card_id")));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-                bill.setRecipient(resultSet.getString("recipient"));
+                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(RECIPIENT));
                 bills.add(bill);
             }
             return bills;
@@ -142,13 +141,13 @@ public class BillDaoImpl implements BillDao {
                 bill.setId(resultSet.getInt("id"));
                 bill.setSum(resultSet.getInt("sum"));
                 bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt("card_id")));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-                bill.setRecipient(resultSet.getString("recipient"));
+                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -175,13 +174,13 @@ public class BillDaoImpl implements BillDao {
                 bill.setId(resultSet.getInt("id"));
                 bill.setSum(resultSet.getInt("sum"));
                 bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt("card_id")));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-                bill.setRecipient(resultSet.getString("recipient"));
+                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -206,13 +205,13 @@ public class BillDaoImpl implements BillDao {
                 bill.setId(resultSet.getInt("id"));
                 bill.setSum(resultSet.getInt("sum"));
                 bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt("card_id")));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-                bill.setRecipient(resultSet.getString("recipient"));
+                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -237,13 +236,13 @@ public class BillDaoImpl implements BillDao {
                 bill.setId(resultSet.getInt("id"));
                 bill.setSum(resultSet.getInt("sum"));
                 bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt("card_id")));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt("bill_status_id")));
-                bill.setRecipient(resultSet.getString("recipient"));
+                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 

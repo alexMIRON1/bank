@@ -2,7 +2,8 @@ package com.bank.model.entity;
 
 public enum Role {
     ADMIN(1, "admin"),
-    CLIENT(2, "client");
+    CLIENT(2, "client"),
+    ANONYMOUS(3,"anonymous");
 
     private final Integer id;
     private final String role;
@@ -27,7 +28,7 @@ public enum Role {
             case 2:
                 return CLIENT;
             default:
-                throw new IllegalArgumentException("Provided wrong id ==> " + id);
+               return ANONYMOUS;
         }
     }
 

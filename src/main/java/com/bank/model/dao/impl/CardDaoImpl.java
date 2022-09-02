@@ -4,14 +4,11 @@ import com.bank.model.dao.CardDao;
 import com.bank.model.entity.Card;
 import com.bank.model.entity.CardStatus;
 import com.bank.model.entity.Client;
-import com.bank.model.exception.ConnectionException;
 import com.bank.model.exception.card.CreateCardException;
 import com.bank.model.exception.card.DeleteCardException;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -92,38 +89,34 @@ public class CardDaoImpl implements CardDao {
     }
     @Override
     public List<Card> transferCard(Card from, Card to) throws UpdateCardException{
-        List<Card> cards = new ArrayList<>();
-        try(Connection connection = getConnection();
-        PreparedStatement preparedStatementFrom = connection.prepareStatement(QUERY_UPDATE_CARD);
-        PreparedStatement preparedStatementTo = connection.prepareStatement(QUERY_UPDATE_CARD)){
-            preparedStatementFrom.setInt(1,from.getBalance());
-            preparedStatementFrom.setInt(2,from.getCardStatus().getId());
-            preparedStatementFrom.setString(3,from.getCustomName());
-            preparedStatementFrom.setInt(4,from.getId());
+        try(Connection connection = getConnection()){
             connection.setAutoCommit(false);
-            Savepoint savepointFrom = connection.setSavepoint();
-            int iFrom = preparedStatementFrom.executeUpdate();
-            if(iFrom!=1){
+            List<Card> cards = new ArrayList<>();
+            try(PreparedStatement preparedStatementFrom = connection.prepareStatement(QUERY_UPDATE_CARD);
+                PreparedStatement preparedStatementTo = connection.prepareStatement(QUERY_UPDATE_CARD)){
+                preparedStatementFrom.setInt(1,from.getBalance());
+                preparedStatementFrom.setInt(2,from.getCardStatus().getId());
+                preparedStatementFrom.setString(3,from.getCustomName());
+                preparedStatementFrom.setInt(4,from.getId());
+                preparedStatementFrom.executeUpdate();
+
+                preparedStatementTo.setInt(1,to.getBalance());
+                preparedStatementTo.setInt(2,to.getCardStatus().getId());
+                preparedStatementTo.setString(3,to.getCustomName());
+                preparedStatementTo.setInt(4,to.getId());
+                preparedStatementTo.executeUpdate();
+                connection.commit();
+                cards.add(from);
+                cards.add(to);
+                return cards;
+            }catch (SQLException e){
                 connection.rollback();
-                throw new UpdateCardException();
+                throw new UpdateCardException(e.getMessage(),e);
             }
-            connection.commit();
-            preparedStatementTo.setInt(1,to.getBalance());
-            preparedStatementTo.setInt(2,to.getCardStatus().getId());
-            preparedStatementTo.setString(3,to.getCustomName());
-            preparedStatementTo.setInt(4,to.getId());
-            int iTo = preparedStatementTo.executeUpdate();
-            if(iTo!=1){
-                connection.rollback(savepointFrom);
-                throw new UpdateCardException();
-            }
-            connection.commit();
-            cards.add(from);
-            cards.add(to);
-            return cards;
         }catch (SQLException e){
-            throw new UpdateCardException(e.getMessage(),e);
+            throw  new UpdateCardException(e.getMessage(),e);
         }
+
     }
 
     @Override

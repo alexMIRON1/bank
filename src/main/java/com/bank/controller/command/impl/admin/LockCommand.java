@@ -35,7 +35,7 @@ public class LockCommand implements Command {
             LOG.debug("user is not updated");
             return "/error.jsp";
         }
-        LOG.info("client was successfully locked");
+        LOG.debug("client was successfully locked");
         return "redirect:/bank/admin?page=" + page.getNumber();
     }
 }

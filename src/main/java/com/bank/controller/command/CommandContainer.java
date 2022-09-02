@@ -1,8 +1,5 @@
 package com.bank.controller.command;
 
-import com.bank.controller.command.impl.*;
-import com.bank.controller.command.impl.admin.UnlockCommand;
-import com.bank.controller.command.impl.client.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +7,6 @@ import java.util.Objects;
 
 /**
  * Contains all commands
- * Change name!
  * */
 public class CommandContainer {
 
@@ -23,11 +19,8 @@ public class CommandContainer {
     static {
         commands = new HashMap<>();
     }
-    public CommandContainer() {
 
-    }
-
-    public synchronized static CommandContainer getInstance() {
+    public static synchronized CommandContainer getInstance() {
         if(Objects.isNull(instance))
             instance = new CommandContainer();
         return instance;

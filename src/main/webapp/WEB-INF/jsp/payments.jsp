@@ -1,6 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
-<%@ taglib prefix = "cur" uri = "/WEB-INF/jstl-tld/custom.tld"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
 <html>
@@ -9,9 +8,7 @@
 </head>
 <body>
 <%@include  file="fragments/header.jspf" %>
-<p class="fw-bolder"><cur:Currency/></p>
-<c:choose>
-    <c:when test="${client.role.id eq 2 || client.role.id eq 1 }">
+
         <br>
         <hr>
         <br>
@@ -178,19 +175,6 @@
         <br>
         <hr>
         <br>
-    </c:when>
-    <c:otherwise>
-        <div class="d-flex align-items-center justify-content-center vh-100">
-            <div class="text-center">
-                <p class="fs-3"> <span class="text-danger"><fmt:message key="error.access.danger"/></span> <fmt:message key="error.access.text"/></p>
-                <p class="lead">
-                    <fmt:message key="error.access.solution"/>
-                </p>
-                <button type="button" class="btn btn-primary" onclick="window.location = 'logout'"><fmt:message key="error.access.button"/></button>
-            </div>
-        </div>
-    </c:otherwise>
-</c:choose>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 <jsp:include page="validation.jsp"/>
 <script>

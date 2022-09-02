@@ -11,6 +11,8 @@ import com.bank.model.exception.client.CreateClientException;
 import com.bank.model.exception.client.ReadClientException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+import org.bouncycastle.util.encoders.Hex;
 
 public class AuthorizedServiceImpl implements AuthorizedService {
     private static final Logger LOG = LogManager.getLogger(AuthorizedServiceImpl.class);
@@ -27,6 +29,7 @@ public class AuthorizedServiceImpl implements AuthorizedService {
         }
         client.setLogin(login);
         client.setPassword(password);
+        hashPassword(client);
         client.setClientStatus(ClientStatus.UNBLOCKED);
         client.setRole(Role.CLIENT);
         clientDao.create(client);
@@ -34,8 +37,11 @@ public class AuthorizedServiceImpl implements AuthorizedService {
 
     @Override
     public Client get(String login, String password) throws ReadClientException, WrongPasswordException, ClientBannedException {
+        SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
+        byte[] passwordToEncode = password.getBytes();
+        String encodedPassword = Hex.toHexString(digestSHA3.digest(passwordToEncode));
         Client client = clientDao.getClient(login);
-        if(!client.getPassword().equals(password)){
+        if(!client.getPassword().equals(encodedPassword)){
             LOG.debug("wrong password");
             throw new WrongPasswordException();
         }
@@ -44,5 +50,11 @@ public class AuthorizedServiceImpl implements AuthorizedService {
             throw new ClientBannedException();
         }
         return client;
+    }
+    private void hashPassword(Client client){
+        SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
+        byte[] passwordToEncode = client.getPassword().getBytes();
+        String encodedPasswordInHex = Hex.toHexString(digestSHA3.digest(passwordToEncode));
+        client.setPassword(encodedPasswordInHex);
     }
 }

@@ -29,7 +29,7 @@ public class RegisterCommand implements Command {
         try {
             Client client = new Client();
             authorizedService.create(client,login,password,passwordConfirm);
-            LOG.info( login + " successfully creates");
+            LOG.debug( login + " successfully creates");
             request.getSession().setAttribute("client", client);
             return "redirect:/bank/login";
         } catch (CreateClientException e) {

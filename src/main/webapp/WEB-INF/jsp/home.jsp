@@ -1,7 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
-<%@ taglib prefix="cur" uri="/WEB-INF/jstl-tld/custom.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
 <html>
@@ -10,9 +9,6 @@
     <%@include  file="fragments/header.jspf" %>
 </head>
 <body>
-<p class="fw-bolder"><cur:Currency/></p>
-<c:choose>
-    <c:when test="${client.role.id eq 2 || client.role.id eq 1 }">
         <br>
         <hr>
         <br>
@@ -58,7 +54,7 @@
                                         <form action="../bank/setName" method="post">
                                             <input type="text" id="textName" value="${card.id}" name="card" hidden>
                                             <input type="text" id = "customName" name="customName" onkeyup="matchSetName()">
-                                            <button type="submit" id = "buttonName" class="btn btn-success"><fmt:message key="home.modal.name.set"/></button><br>
+                                            <button type="submit" id = "buttonName" class="btn btn-success" onclick="matchSetName()"><fmt:message key="home.modal.name.set"/></button><br>
                                             <label class="form-label text-start" for="customName"><fmt:message key="home.modal.name.label"/></label>
                                             <span id = "messageSetName"></span>
                                         </form>
@@ -131,19 +127,6 @@
         <br>
         <hr>
         <br>
-    </c:when>
-    <c:otherwise>
-        <div class="d-flex align-items-center justify-content-center vh-100">
-            <div class="text-center">
-                <p class="fs-3"> <span class="text-danger"><fmt:message key="error.access.danger"/></span> <fmt:message key="error.access.text"/></p>
-                <p class="lead">
-                    <fmt:message key="error.access.solution"/>
-                </p>
-                <button type="button" class="btn btn-primary" onclick="window.location = 'logout'"><fmt:message key="error.access.button"/></button>
-            </div>
-        </div>
-    </c:otherwise>
-</c:choose>
 <jsp:include page="validation.jsp"/>
 <script>
     var exampleModal = document.getElementById('windowModalCenter')

@@ -2,11 +2,6 @@ package com.bank.controller.command.impl.client;
 
 import com.bank.controller.command.Command;
 import com.bank.controller.service.client.PaymentsPageService;
-import com.bank.controller.service.client.impl.PaymentsPageServiceImpl;
-import com.bank.model.dao.BillDao;
-import com.bank.model.dao.CardDao;
-import com.bank.model.dao.impl.DaoEnum;
-import com.bank.model.dao.impl.FactoryDao;
 import com.bank.model.entity.Bill;
 import com.bank.model.entity.Card;
 import com.bank.model.entity.Page;
@@ -17,7 +12,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +46,7 @@ public class PaymentsPageCommand implements Command {
             request.getSession().setAttribute("noOfPages", noOfPages);
             request.getSession().setAttribute("currentCard", card);
             request.getSession().setAttribute("bills", bills);
-            LOG.info("card was successfully read");
+            LOG.debug("card was successfully read");
         } catch (ReadCardException  e) {
             // such card does not exist
             LOG.debug("fail to obtain card-->such card does not exist");
@@ -65,13 +59,6 @@ public class PaymentsPageCommand implements Command {
         return "/payments.jsp";
     }
 
-    /**
-     * gets bills by card and sort parameter
-     * @param sort the string-param
-     * @param card the card
-     * @throws ReadBillException in case when bill was not read
-     * @throws NullPointerException in case when card is null
-     * */
     private List<Bill> getBills(String sort, Card card, Page page) throws ReadBillException, NullPointerException, ReadCardException {
         List<Bill> bills;
         bills = paymentsPageService.getSortedBills(sort, card, page);

@@ -1,7 +1,6 @@
 package com.bank.controller.command.impl.client;
 
 import com.bank.controller.command.Command;
-import com.bank.controller.service.client.CardsService;
 import com.bank.controller.service.client.HomePageService;
 import com.bank.model.entity.Card;
 import com.bank.model.entity.Client;
@@ -27,14 +26,13 @@ public class HomePageCommand implements Command {
     public String execute(HttpServletRequest request) {
         Client client = (Client) request.getSession().getAttribute("client");
         String sort = Objects.isNull(request.getParameter("sort")) ? "" : request.getParameter("sort");
-        String locale = String.valueOf(request.getSession().getAttribute("locale"));
         try {
             Page page = new Page();
             page.setNumberPage(1);
             page.setRecords(3);
             if(request.getParameter("page")!=null){
                 page.setNumberPage(Integer.parseInt(request.getParameter("page")));
-                LOG.info("page = " + page.getNumber());
+                LOG.debug("page = " + page.getNumber());
             }
             Client fullClient = homePageService.fillClient(client.getId());
             List<Card> cards = getCards(sort, fullClient,page);
@@ -48,15 +46,9 @@ public class HomePageCommand implements Command {
             LOG.debug("fail to obtain cards");
             return "/error.jsp";
         }
+        LOG.debug("successfully show home page");
         return "/home.jsp";
     }
-    /**
-     * gets cards by sort param
-     * @param sort the string-param
-     * @param client the client
-     * @throws ReadCardException in case when cards was not read
-     * @throws NullPointerException in case when client is null
-     * */
     private List<Card> getCards(String sort, Client client,Page page) throws ReadCardException, NullPointerException, ReadClientException{
         List<Card> cards;
         cards = homePageService.sort(client,sort,page);

@@ -9,5 +9,4 @@
 		}
 		Config.set(request,"javax.servlet.jsp.jstl.fmt.locale", defaultLocale);
 	}
-
 %>

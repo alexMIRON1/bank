@@ -36,7 +36,7 @@ public class UnlockCommand implements Command {
             LOG.debug("user is not updated");
             return "/error.jsp";
         }
-        LOG.info("client was successfully unlocked");
+        LOG.debug("client was successfully unlocked");
         return "redirect:/bank/admin?page=" + page.getNumber();
     }
 }

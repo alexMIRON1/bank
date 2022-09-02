@@ -58,7 +58,7 @@ public class FrontController extends HttpServlet {
         try{
             if(!forward.startsWith(REDIRECT)) {
                 LOG.info("Forward working");
-                request.getRequestDispatcher(new StringBuilder("/WEB-INF/jsp").append(forward).toString()).forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/jsp" + forward).forward(request, response);
                 LOG.info("Controller finished, go to address--> " + forward);
             }
         }catch (ServletException | IOException e){

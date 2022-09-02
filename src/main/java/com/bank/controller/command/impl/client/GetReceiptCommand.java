@@ -93,6 +93,7 @@ public class GetReceiptCommand implements Command {
         try {
             Session session = Session.getDefaultInstance(props,
                     new Authenticator(){
+                        @Override
                         protected PasswordAuthentication getPasswordAuthentication() {
                             return new PasswordAuthentication(FROM, password);
                         }});

@@ -5,7 +5,6 @@ import com.bank.model.entity.Client;
 import com.bank.model.exception.card.CreateCardException;
 import com.bank.model.exception.card.ReadCardException;
 
-import java.sql.SQLException;
 
 public interface ReceiveCardService {
     /**
