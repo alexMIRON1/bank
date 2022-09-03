@@ -7,6 +7,8 @@ import com.bank.model.entity.BillStatus;
 import com.bank.model.entity.Card;
 import com.bank.model.exception.bill.ReadBillException;
 import com.bank.model.exception.card.ReadCardException;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,9 @@ import javax.mail.MessagingException;
 import javax.mail.Transport;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,6 +34,11 @@ public class GetReceiptCommandTest {
     private HttpSession session;
     @Mock
     private BillsService billsService;
+    @AfterClass
+    public static void globalTearDown() {
+        File file = new File("receipt.pdf");
+        file.delete();
+    }
     @Before
     public void setUp() throws ReadCardException, ReadBillException, MessagingException {
         Mockito.when(request.getParameter("bill")).thenReturn("1");
