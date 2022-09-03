@@ -38,7 +38,7 @@ You can not check my application online, because I did not deploy project to the
 
 ## Instruction for launch
 
-1.Open IDE(recommend IntelliJ IDEA).
+1. Open IDE(recommend IntelliJ IDEA).
 2. Press to Get from VCS.
 3. Insert this URL to according field
 
