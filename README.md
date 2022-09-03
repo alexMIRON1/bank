@@ -21,7 +21,7 @@ log in or sign up before.
 11. Authentication and Authorization.
 12. Security filter, separating users role.
 13. Password encrypting.
-14. Unit and Integration tests.
+14. Unit tests.
 15. All input fields are validated.
 16. Send letters to email.
 17. HTML, Bootstrap, JS.
