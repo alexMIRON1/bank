@@ -48,7 +48,7 @@ clone git: https://github.com/alexMIRON1/bank.git
 ![My Image](images/launch.jpg)
 
 4. Take a directory and press Clone.
-5.Finish.
+5. Finish.
 
 ## Setting IDE for IntelliJ IDEA
 
