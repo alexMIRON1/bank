@@ -3,7 +3,7 @@
 ## Information
 
 Payments is a web application written in Java. The payments is a platform where users can create personalized cards, manage them and make simple operations, for example, 
-making payments, transferring to another card, and sorting bills and sotr cards or payments for fast finding needed things. If you want to enter and try all of these functions, you have to 
+making payments, transferring to another card, and sorting bills and  cards for fast finding needed one. If you want to enter and try all of these functions, you have to 
 log in or sign up before.
 
 ## Technologies
