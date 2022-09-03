@@ -28,7 +28,9 @@ log in or sign up before.
 18. Pagination.
 19. Documented code.
 
-![My Image](images/db.jpg) "Database diagram"
+##Database diagram
+
+![My Image](images/db.jpg)
 
 ```bash
 You can not check my application online, because I did not deploy project to the host.
@@ -43,7 +45,7 @@ You can not check my application online, because I did not deploy project to the
 ```bash
 clone git: https://github.com/alexMIRON1/bank.git
 ```
-![My Image](images/launch.png)
+![My Image](images/launch.jpg)
 
 4. Take a directory and press Clone.
 5.Finish.
@@ -52,7 +54,7 @@ clone git: https://github.com/alexMIRON1/bank.git
 
 1. You have to connect Apache Tomcat 9 (I recommend this version) For this you have to press Edit configurations... or Add configuration... like on a picture
 
-![My Image](images/tomcat.png)
+![My Image](images/tomcat.jpg)
 
 2. After it, you have to press 'Plus icon'.
 3. Where you have to choose Tomcat Server and press Local
@@ -60,18 +62,18 @@ clone git: https://github.com/alexMIRON1/bank.git
 
 ##Screenshots of my application
 
-![My Image](images/about.png)
+![My Image](images/about.jpg)
 
-![My Image](images/registration.png)
+![My Image](images/registration.jpg)
 
-![My Image](images/login.png)
+![My Image](images/login.jpg)
 
-![My Image](images/home.png)
+![My Image](images/home.jpg)
 
-![My Image](images/settings_card.png)
+![My Image](images/settings_card.jpg)
 
-![My Image](images/payments.png)
+![My Image](images/payments.jpg)
 
-![My Image](images/transfer_card.png)
+![My Image](images/transfer_card.jpg)
 
-![My Image](images/admin.png)
+![My Image](images/admin.jpg)
