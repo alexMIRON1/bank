@@ -43,7 +43,6 @@ public interface CardDao extends Dao {
      * updated cards in databes
      * @param from sender's card
      * @param to recipient's card
-     * @return updated list cards
      * @throws UpdateCardException in case where something card was not updated
      * **/
     List<Card> transferCard(Card from, Card to) throws  UpdateCardException;

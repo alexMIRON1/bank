@@ -33,6 +33,5 @@ public class HomePageCommandTest {
         HomePageCommand homePageCommand = new HomePageCommand(homePageService);
         String path = homePageCommand.execute(request);
         assertEquals("/home.jsp",path);
-
     }
 }

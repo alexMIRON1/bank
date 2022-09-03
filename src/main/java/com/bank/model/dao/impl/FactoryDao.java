@@ -1,8 +1,5 @@
 package com.bank.model.dao.impl;
 
-import com.bank.model.dao.BillDao;
-import com.bank.model.dao.CardDao;
-import com.bank.model.dao.ClientDao;
 import com.bank.model.dao.Dao;
 import com.bank.model.exception.DaoFactoryException;
 

@@ -16,6 +16,7 @@ import java.util.Map;
 public class LoginCommand implements Command {
     private static final Logger LOG = LogManager.getLogger(LoginCommand.class);
     private final AuthorizedService authorizedService;
+    private static final String ERROR = "redirect:/bank/login";
 
     public LoginCommand(AuthorizedService authorizedService) {
         this.authorizedService = authorizedService;
@@ -41,15 +42,15 @@ public class LoginCommand implements Command {
         } catch (ReadClientException e) {
             // most likely such client does not exist (incorrect login) or problem in the dao
             LOG.debug(login + " is incorrect");
-            return "redirect:/bank/login";
+            return ERROR;
         } catch (WrongPasswordException e) {
             // real password and entered password are not equal
             LOG.debug("wrong password");
-            return "redirect:/bank/login";
+            return ERROR;
         } catch (ClientBannedException e) {
             // client status is blocked
             LOG.debug("status is blocked");
-            return "redirect:/bank/login";
+            return ERROR;
         }
     }
 

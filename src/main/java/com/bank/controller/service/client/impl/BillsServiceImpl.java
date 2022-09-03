@@ -17,6 +17,7 @@ import com.bank.model.exception.card.UpdateCardException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 public class BillsServiceImpl implements BillsService {
@@ -55,7 +56,6 @@ public class BillsServiceImpl implements BillsService {
         }
         cardTo.setBalance(cardTo.getBalance() + bill.getSum());
         cardDao.transferCard(card,cardTo);
-//        cardDao.update(card);
     }
 
     @Override
@@ -67,6 +67,7 @@ public class BillsServiceImpl implements BillsService {
         bill.setBillStatus(BillStatus.PAID);
         bill.setCard(card);
         bill.setRecipient(cardTo.getName());
+        bill.setDate(new Date());
         billDao.update(bill);
     }
 

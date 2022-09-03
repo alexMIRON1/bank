@@ -49,6 +49,13 @@ public class HomePageCommand implements Command {
         LOG.debug("successfully show home page");
         return "/home.jsp";
     }
+    /**
+     * gets cards by sort param
+     * @param sort the string-param
+     * @param client the client
+     * @throws ReadCardException in case when cards was not read
+     * @throws NullPointerException in case when client is null
+     * */
     private List<Card> getCards(String sort, Client client,Page page) throws ReadCardException, NullPointerException, ReadClientException{
         List<Card> cards;
         cards = homePageService.sort(client,sort,page);

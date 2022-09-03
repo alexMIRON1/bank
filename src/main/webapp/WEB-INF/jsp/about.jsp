@@ -2,6 +2,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="l" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <l:setLocale/>
+<!DOCTYPE>
 <html>
 <head>
     <title><fmt:message key="about.title"/></title>

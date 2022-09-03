@@ -129,6 +129,19 @@ public class CardDAOTest {
         cardDao.update(new Card());
     }
     @Test
+    public void testTransferCard() throws UpdateCardException {
+        card.setBalance(50);
+        Card cardTo = new Card(2);
+        cardTo.setBalance(card.getBalance());
+        cardTo.setCardStatus(CardStatus.UNBLOCKED);
+        cardTo.setClient(new Client(1));
+        cardTo.setCustomName("Wife's card");
+
+        List<Card> testCards = cardDao.transferCard(card,cardTo);
+        assertEquals(card.getBalance(),testCards.get(0).getBalance());
+        assertEquals(cardTo.getBalance(),testCards.get(0).getBalance());
+    }
+    @Test
     public void testGetCards() throws CreateCardException, ReadCardException, SQLException {
         card.setName("0002");
         card.setBalance(200);

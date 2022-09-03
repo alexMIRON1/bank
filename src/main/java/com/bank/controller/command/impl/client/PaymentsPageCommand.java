@@ -59,6 +59,13 @@ public class PaymentsPageCommand implements Command {
         return "/payments.jsp";
     }
 
+    /**
+     * gets bills by card and sort parameter
+     * @param sort the string-param
+     * @param card the card
+     * @throws ReadBillException in case when bill was not read
+     * @throws NullPointerException in case when card is null
+     * */
     private List<Bill> getBills(String sort, Card card, Page page) throws ReadBillException, NullPointerException, ReadCardException {
         List<Bill> bills;
         bills = paymentsPageService.getSortedBills(sort, card, page);

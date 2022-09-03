@@ -1,6 +1,11 @@
 package command;
+import com.bank.controller.command.exception.ClientBannedException;
+import com.bank.controller.command.exception.WrongPasswordException;
 import com.bank.controller.command.impl.LoginCommand;
 import com.bank.controller.service.AuthorizedService;
+import com.bank.model.entity.Client;
+import com.bank.model.entity.Role;
+import com.bank.model.exception.client.ReadClientException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,8 +35,9 @@ public class LoginCommandTest {
         params.put("password",new String[]{"alex"});
     }
     @Before
-    public void setUp(){
+    public void setUp() throws ReadClientException, ClientBannedException, WrongPasswordException {
         Mockito.when(request.getSession()).thenReturn(session);
+        Mockito.when(authorizedService.get(params.get("login")[0],params.get("password")[0])).thenReturn(new Client());
         Mockito.when(request.getParameterMap()).thenReturn(params);
     }
     @Test

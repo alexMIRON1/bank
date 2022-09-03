@@ -1,6 +1,7 @@
 package com.bank.model.dao.impl;
 
 import com.bank.model.dao.CardDao;
+import com.bank.model.dao.ConstantsDao;
 import com.bank.model.entity.Card;
 import com.bank.model.entity.CardStatus;
 import com.bank.model.entity.Client;
@@ -14,29 +15,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CardDaoImpl implements CardDao {
 
-    // change to yours
     private int noOfRecords;
-    // queries
-    private static final String QUERY_READ_CARDS_READY_TO_UNBLOCK = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE card_status_id=3 LIMIT ?, ?";
-    private static final String QUERY_READ_CARD_BY_CARD_ID = "SELECT * FROM card WHERE id=?";
-    private static final String QUERY_READ_CARDS_BY_CLIENT_ID = "SELECT * FROM card WHERE client_id=?";
-    private static final String QUERY_READ_LAST_CARD_NAME = "SELECT name FROM card ORDER BY name DESC LIMIT 1";
-    private static final String QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_CUSTOM_NAME = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE client_id=? ORDER BY name_custom LIMIT ?, ?";
-    private static final String QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_NAME = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE client_id=? ORDER BY name LIMIT ?, ?";
-    private static final String QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_BALANCE = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE client_id=? ORDER BY balance DESC LIMIT ?, ?";
-    private static final String QUERY_CREATE_CARD = "INSERT INTO card (id, name, balance, card_status_id, client_id, name_custom) " +
-            "VALUE (DEFAULT, ?, ?, ?, ?, ?)";
-    private static final String QUERY_UPDATE_CARD = "UPDATE card SET balance=?, card_status_id=?, name_custom=? WHERE id=?";
-    private static final String QUERY_SHOW_CARD_PAGE = "SELECT SQL_CALC_FOUND_ROWS * FROM card WHERE client_id=? LIMIT ?, ?";
-    public CardDaoImpl() {
-        // here you could place additional conf
-    }
     @Override
     public Card create(Card card) throws CreateCardException {
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CREATE_CARD)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_CREATE_CARD)) {
             preparedStatement.setString(1, card.getName());
             preparedStatement.setInt(2, card.getBalance());
             preparedStatement.setInt(3, card.getCardStatus().getId());
@@ -55,16 +41,16 @@ public class CardDaoImpl implements CardDao {
     public Card read(Integer id) throws ReadCardException{
         Card card = new Card();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARD_BY_CARD_ID)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARD_BY_CARD_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            card.setId(resultSet.getInt("id"));
-            card.setName(resultSet.getString("name"));
-            card.setBalance(resultSet.getInt("balance"));
-            card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-            card.setClient(new Client(resultSet.getInt("client_id")));
-            card.setCustomName(resultSet.getString("name_custom"));
+            card.setId(resultSet.getInt(ConstantsDao.ID));
+            card.setName(resultSet.getString(ConstantsDao.NAME));
+            card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+            card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+            card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+            card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
             return card;
         } catch (SQLException e) {
             throw new ReadCardException(e.getMessage(), e);
@@ -74,7 +60,7 @@ public class CardDaoImpl implements CardDao {
     @Override
     public Card update(Card card) throws UpdateCardException{
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_UPDATE_CARD)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD)) {
             preparedStatement.setInt(1, card.getBalance());
             preparedStatement.setInt(2, card.getCardStatus().getId());
             preparedStatement.setString(3, card.getCustomName());
@@ -92,8 +78,8 @@ public class CardDaoImpl implements CardDao {
         try(Connection connection = getConnection()){
             connection.setAutoCommit(false);
             List<Card> cards = new ArrayList<>();
-            try(PreparedStatement preparedStatementFrom = connection.prepareStatement(QUERY_UPDATE_CARD);
-                PreparedStatement preparedStatementTo = connection.prepareStatement(QUERY_UPDATE_CARD)){
+            try(PreparedStatement preparedStatementFrom = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD);
+                PreparedStatement preparedStatementTo = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD)){
                 preparedStatementFrom.setInt(1,from.getBalance());
                 preparedStatementFrom.setInt(2,from.getCardStatus().getId());
                 preparedStatementFrom.setString(3,from.getCustomName());
@@ -128,17 +114,17 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getCards(Client client) throws ReadCardException {
         List<Card> cards = new ArrayList<>();
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARDS_BY_CLIENT_ID)) {
             preparedStatement.setInt(1, client.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             return cards;
@@ -150,23 +136,23 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getCardsOnPage(Client client, int start, int end) throws ReadCardException{
         List<Card> cards = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_SHOW_CARD_PAGE)){
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_SHOW_CARD_PAGE)){
             preparedStatement.setInt(1,client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if (resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
             }
@@ -185,23 +171,23 @@ public class CardDaoImpl implements CardDao {
 
         List<Card> cards = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_NAME)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_NAME)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if (resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
             }
@@ -215,23 +201,23 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getCardsSortedByName(Client client, int start, int end) throws ReadCardException {
         List<Card> cards = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_CUSTOM_NAME)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_CUSTOM_NAME)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if (resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
             }
@@ -245,23 +231,23 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getCardsSortedByBalance(Client client, int start, int end) throws ReadCardException{
         List<Card> cards = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_BALANCE)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARDS_BY_CLIENT_ID_SORTED_BY_BALANCE)) {
             preparedStatement.setInt(1, client.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if (resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
             }
@@ -274,7 +260,7 @@ public class CardDaoImpl implements CardDao {
     @Override
     public String getLastCardName() throws ReadCardException{
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_LAST_CARD_NAME)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_LAST_CARD_NAME)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return resultSet.getString("name");
@@ -286,23 +272,23 @@ public class CardDaoImpl implements CardDao {
     @Override
     public List<Card> getCardsToUnblock(int start, int end) throws ReadCardException{
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_CARDS_READY_TO_UNBLOCK)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_CARDS_READY_TO_UNBLOCK)) {
             preparedStatement.setInt(1,start);
             preparedStatement.setInt(2,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Card> cards = new ArrayList<>();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("id"));
-                card.setName(resultSet.getString("name"));
-                card.setBalance(resultSet.getInt("balance"));
-                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt("card_status_id")));
-                card.setClient(new Client(resultSet.getInt("client_id")));
-                card.setCustomName(resultSet.getString("name_custom"));
+                card.setId(resultSet.getInt(ConstantsDao.ID));
+                card.setName(resultSet.getString(ConstantsDao.NAME));
+                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
+                card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
+                card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
                 cards.add(card);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery("SELECT FOUND_ROWS()");
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if (resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
             }
@@ -311,15 +297,19 @@ public class CardDaoImpl implements CardDao {
             throw new ReadCardException(e.getMessage(), e);
         }
     }
-    /**
-     * gets connection
-     * */
+
     private DataSource ds;
 
+    /**
+     * set data source
+     * @param ds for connection
+     */
     public void setDs(DataSource ds) {
         this.ds = ds;
     }
-
+    /**
+     * gets connection
+     * */
     private Connection getConnection() throws SQLException {
         return ds.getConnection();
     }

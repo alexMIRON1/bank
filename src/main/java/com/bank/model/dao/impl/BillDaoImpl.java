@@ -1,6 +1,7 @@
 package com.bank.model.dao.impl;
 
 import com.bank.model.dao.BillDao;
+import com.bank.model.dao.ConstantsDao;
 import com.bank.model.entity.Bill;
 import com.bank.model.entity.BillStatus;
 import com.bank.model.entity.Card;
@@ -17,25 +18,12 @@ import java.util.List;
 public class BillDaoImpl implements BillDao {
 
     private int noOfRecords;
-    private static final String QUERY_CREATE_BILL = "INSERT INTO bill (id, sum, date, card_id, bill_status_id, recipient) VALUE " +
-            "(DEFAULT, ?, DEFAULT, ?, ?, ?)";
-    private static final String QUERY_UPDATE_BILL = "UPDATE bill SET bill_status_id=?,recipient=? where id=?";
-    private static final String QUERY_READ_BILL = "SELECT * FROM bill WHERE id=?";
-    private static final String QUERY_READ_BILLS_BY_CARD_ID = "SELECT * FROM bill WHERE card_id=?";
-    private static final String QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? ORDER BY id LIMIT ?, ?";
-    private static final String QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? ORDER BY date LIMIT ?, ?";
-    private static final String QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? ORDER BY date DESC LIMIT ?, ?";
-    private static final String QUERY_SHOW_BILLS = "SELECT SQL_CALC_FOUND_ROWS * FROM bill WHERE card_id=? LIMIT ?, ?";
-    private static final String QUERY_DELETE_BILL = "DELETE FROM bill WHERE id=?";
-    private static final String ID_CARD = "card_id";
-    private static final String BILL_STATUS_ID = "bill_status_id";
-    private static final String RECIPIENT = "recipient";
-    private static final String SELECT_ROWS = "SELECT FOUND_ROWS()";
+
 
     @Override
     public Bill create(Bill bill) throws CreateBillException {
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_CREATE_BILL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_CREATE_BILL)) {
             preparedStatement.setInt(1, bill.getSum());
             preparedStatement.setInt(2, bill.getCard().getId());
             preparedStatement.setInt(3, bill.getBillStatus().getId());
@@ -53,16 +41,16 @@ public class BillDaoImpl implements BillDao {
     public Bill read(Integer id) throws ReadBillException {
         Bill bill = new Bill();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_BILL)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            bill.setId(resultSet.getInt("id"));
-            bill.setSum(resultSet.getInt("sum"));
-            bill.setDate(resultSet.getDate("date"));
-            bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-            bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-            bill.setRecipient(resultSet.getString(RECIPIENT));
+            bill.setId(resultSet.getInt(ConstantsDao.ID));
+            bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+            bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+            bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+            bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+            bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
             return bill;
         } catch (SQLException e) {
             throw new ReadBillException(e.getMessage(), e);
@@ -72,7 +60,7 @@ public class BillDaoImpl implements BillDao {
     @Override
     public Bill update(Bill bill) throws UpdateBillException {
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_UPDATE_BILL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_BILL)) {
             preparedStatement.setInt(1, bill.getBillStatus().getId());
             preparedStatement.setString(2, bill.getRecipient());
             preparedStatement.setInt(3, bill.getId());
@@ -88,7 +76,7 @@ public class BillDaoImpl implements BillDao {
     @Override
     public Integer delete(Integer id) throws DeleteBillException {
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_DELETE_BILL)){
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_DELETE_BILL)){
             preparedStatement.setInt(1,id);
             int i = preparedStatement.executeUpdate();
             if(i != 1)
@@ -103,17 +91,17 @@ public class BillDaoImpl implements BillDao {
     public List<Bill> getBills(Card card) throws ReadBillException{
         List<Bill> bills = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_BILLS_BY_CARD_ID)) {
             preparedStatement.setInt(1, card.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Bill bill = new Bill();
-                bill.setId(resultSet.getInt("id"));
-                bill.setSum(resultSet.getInt("sum"));
-                bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-                bill.setRecipient(resultSet.getString(RECIPIENT));
+                bill.setId(resultSet.getInt(ConstantsDao.ID));
+                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+                bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
                 bills.add(bill);
             }
             return bills;
@@ -131,23 +119,23 @@ public class BillDaoImpl implements BillDao {
     public List<Bill> getBillsOnPage(Card card, int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_SHOW_BILLS)){
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_SHOW_BILLS)){
             preparedStatement.setInt(1,card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Bill bill = new Bill();
-                bill.setId(resultSet.getInt("id"));
-                bill.setSum(resultSet.getInt("sum"));
-                bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-                bill.setRecipient(resultSet.getString(RECIPIENT));
+                bill.setId(resultSet.getInt(ConstantsDao.ID));
+                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+                bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -164,23 +152,23 @@ public class BillDaoImpl implements BillDao {
     public List<Bill> getBillsSortedById(Card card,int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_ID)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Bill bill = new Bill();
-                bill.setId(resultSet.getInt("id"));
-                bill.setSum(resultSet.getInt("sum"));
-                bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-                bill.setRecipient(resultSet.getString(RECIPIENT));
+                bill.setId(resultSet.getInt(ConstantsDao.ID));
+                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+                bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -195,23 +183,23 @@ public class BillDaoImpl implements BillDao {
     public List<Bill> getBillsSortedByDate(Card card,int start, int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Bill bill = new Bill();
-                bill.setId(resultSet.getInt("id"));
-                bill.setSum(resultSet.getInt("sum"));
-                bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-                bill.setRecipient(resultSet.getString(RECIPIENT));
+                bill.setId(resultSet.getInt(ConstantsDao.ID));
+                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+                bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -226,23 +214,23 @@ public class BillDaoImpl implements BillDao {
     public List<Bill> getBillsSortedByDateDesc(Card card, int start,int end) throws ReadBillException {
         List<Bill> bills = new ArrayList<>();
         try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_READ_BILLS_BY_CARD_ID_SORTED_BY_DATE_DESC)) {
             preparedStatement.setInt(1, card.getId());
             preparedStatement.setInt(2,start);
             preparedStatement.setInt(3,end);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Bill bill = new Bill();
-                bill.setId(resultSet.getInt("id"));
-                bill.setSum(resultSet.getInt("sum"));
-                bill.setDate(resultSet.getDate("date"));
-                bill.setCard(new Card(resultSet.getInt(ID_CARD)));
-                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(BILL_STATUS_ID)));
-                bill.setRecipient(resultSet.getString(RECIPIENT));
+                bill.setId(resultSet.getInt(ConstantsDao.ID));
+                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setDate(resultSet.getDate(ConstantsDao.DATE));
+                bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
+                bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
+                bill.setRecipient(resultSet.getString(ConstantsDao.RECIPIENT));
                 bills.add(bill);
             }
             resultSet.close();
-            resultSet = preparedStatement.executeQuery(SELECT_ROWS);
+            resultSet = preparedStatement.executeQuery(ConstantsDao.SELECT_ROWS);
             if(resultSet.next()){
                 this.noOfRecords = resultSet.getInt(1);
 
@@ -253,15 +241,18 @@ public class BillDaoImpl implements BillDao {
         }
     }
 
-    /**
-     * gets connection
-     * */
     private DataSource ds;
 
+    /**
+     * set data source
+     * @param ds for connection
+     */
     public void setDs(DataSource ds) {
         this.ds = ds;
     }
-
+    /**
+     * gets connection
+     * */
     private Connection getConnection() throws SQLException {
         return ds.getConnection();
     }

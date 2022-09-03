@@ -51,6 +51,13 @@ public class GetReceiptCommand implements Command {
         return "/payments.jsp";
     }
 
+    /**
+     * make a document with information about bill
+     * @param card information about card
+     * @param bill information abou bill
+     * @throws IOException wrong data
+     * @throws DocumentException when something wrong with making file, maybe you have not right, open IDE with admin right
+     */
     private void makeReceipt(Card card, Bill bill) throws IOException, DocumentException {
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("receipt.pdf"));
@@ -79,6 +86,10 @@ public class GetReceiptCommand implements Command {
         LOG.debug("document and writer closed");
     }
 
+    /**
+     * send email letter with the receipt
+     * @param to email address of recipient
+     */
     private  void sendEmail(String to) {
         Properties props = System.getProperties();
         props.setProperty("mail.smtp.host", "smtp.gmail.com");

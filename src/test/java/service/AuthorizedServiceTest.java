@@ -9,6 +9,8 @@ import com.bank.model.entity.Client;
 import com.bank.model.entity.ClientStatus;
 import com.bank.model.exception.client.CreateClientException;
 import com.bank.model.exception.client.ReadClientException;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +34,8 @@ public class AuthorizedServiceTest {
     @Test
     public void testGet() throws ReadClientException, ClientBannedException, WrongPasswordException {
         AuthorizedService loginService = new AuthorizedServiceImpl(clientDao);
-        Client testClient = loginService.get(client.getLogin(), client.getPassword());
+        hashPassword(client);
+        Client testClient = loginService.get(client.getLogin(), "alex");
         assertEquals(client.getLogin(),testClient.getLogin());
         assertEquals(client.getId(),testClient.getId());
         assertEquals(client.getClientStatus().getId(),testClient.getClientStatus().getId());
@@ -47,7 +50,7 @@ public class AuthorizedServiceTest {
     public void testClientBanned() throws ReadClientException, ClientBannedException, WrongPasswordException {
         AuthorizedService authorizedService = new AuthorizedServiceImpl(clientDao);
         client.setClientStatus(ClientStatus.BLOCKED);
-        authorizedService.get(client.getLogin(), client.getPassword());
+        authorizedService.get(client.getLogin(), "alex");
     }
     @Test(expected = WrongPasswordException.class)
     public void testWrongPassword() throws ReadClientException, ClientBannedException, WrongPasswordException {
@@ -60,6 +63,7 @@ public class AuthorizedServiceTest {
         String login = client.getLogin();
         String password = client.getPassword();
         Client testClient = new Client(1);
+        hashPassword(client);
         client.setClientStatus(ClientStatus.UNBLOCKED);
         authorizedService.create(testClient,login,password,password);
         assertEquals(client.getId(),testClient.getId());
@@ -75,5 +79,11 @@ public class AuthorizedServiceTest {
         String password = client.getPassword();
         Client testClient = new Client(1);
         authorizedService.create(testClient,login,password,"password");
+    }
+    private void hashPassword(Client client){
+        SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
+        byte[] passwordToEncode = client.getPassword().getBytes();
+        String encodedPasswordInHex = Hex.toHexString(digestSHA3.digest(passwordToEncode));
+        client.setPassword(encodedPasswordInHex);
     }
 }

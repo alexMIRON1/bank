@@ -51,6 +51,11 @@ public class AuthorizedServiceImpl implements AuthorizedService {
         }
         return client;
     }
+
+    /**
+     * hex password
+     * @param client client whose password hashing
+     */
     private void hashPassword(Client client){
         SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest512();
         byte[] passwordToEncode = client.getPassword().getBytes();
