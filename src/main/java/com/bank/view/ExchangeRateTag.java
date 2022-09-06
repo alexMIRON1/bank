@@ -17,7 +17,7 @@ public class ExchangeRateTag extends SimpleTagSupport {
         JspWriter out = getJspContext().getOut();
         String sell = getExchangeRate("USD", "UAH");
         String buy = getExchangeRate("UAH", "USD");
-        out.println(sell + "/" +String.format("%.4f",1/ Double.parseDouble(buy)).replace(",","."));
+        out.println("$"+sell + "/" +String.format("%.4f",1/ Double.parseDouble(buy)).replace(",","."));
     }
     private static String getExchangeRate(String sell, String buy) throws IOException {
         URL url = new URL("https://v6.exchangerate-api.com/v6/dde80aa8f75ebfb52f4f1eec/latest/"+ sell);
