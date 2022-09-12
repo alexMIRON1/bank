@@ -27,6 +27,7 @@ log in or sign up before.
 17. HTML, Bootstrap, JS.
 18. Pagination.
 19. Documented code.
+20. JSON
 
 ## Database diagram
 
