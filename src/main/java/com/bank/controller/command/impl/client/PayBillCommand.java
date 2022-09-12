@@ -30,7 +30,7 @@ public class PayBillCommand implements Command {
         Page page = (Page) request.getSession().getAttribute("page");
         Integer billId = Integer.parseInt(request.getParameter("bill"));
         String idToCard = request.getParameter("toCard");
-        Integer idCard = Integer.parseInt(idToCard.replace("0",""));
+        Integer idCard = Integer.parseInt(idToCard);
         try {
             Bill bill = billsService.read(billId);
             Card card = billsService.fillCard(bill.getCard().getId());
@@ -42,12 +42,12 @@ public class PayBillCommand implements Command {
             List<Bill> bills = billsService.getBills(card);
             request.getSession().setAttribute("currentCard", card);
             request.getSession().setAttribute("bills", bills);
-            LOG.debug("Bill was successfully paid");
+            LOG.debug("Bill was successfully paid to card " + idCard);
             return "redirect:/bank/payments?page=" + page.getNumber() + "&card=" + card.getId();
         } catch (ReadBillException | ReadCardException e) {
             // such bill does not exist
-            LOG.debug("fail to obtain bill-->such bill does not exist");
-            return ERROR;
+            LOG.debug("fail to obtain bill-->such bill does not exist or card");
+            return "/errors/cardNotExist.jsp";
         } catch (UpdateBillException e) {
             // bill is not updated perhaps entered wrong data
             LOG.debug("fail to update bill-->entered wrong data");

@@ -1,12 +1,12 @@
-package com.bank.controller.command.impl;
+package com.bank.controller.command.impl.error;
 
 import com.bank.controller.command.Command;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class AccessDenyPageCommand implements Command {
+public class ClientBannedPageCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
-        return "/accessDeny.jsp";
+        return "/errors/clientBanned.jsp";
     }
 }

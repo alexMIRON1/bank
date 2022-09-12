@@ -5,6 +5,7 @@ import com.bank.controller.command.CommandContainer;
 import com.bank.controller.command.impl.*;
 import com.bank.controller.command.impl.admin.*;
 import com.bank.controller.command.impl.client.*;
+import com.bank.controller.command.impl.error.*;
 import com.bank.controller.service.*;
 import com.bank.controller.service.admin.AdminPageService;
 import com.bank.controller.service.admin.ControlUserService;
@@ -54,10 +55,10 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
         container.put("/register", new RegisterPageCommand());
         //logout
         container.put("/logout", new LogoutCommand());
-        //errorPage
+        //errorPages
         container.put("/error", new ErrorPageCommand());
-        //accessDenyPage
         container.put("/accessDeny", new AccessDenyPageCommand());
+        container.put("/clientBanned", new ClientBannedPageCommand());
         //register
         AuthorizedService authorizedService = new AuthorizedServiceImpl(clientDao);
 

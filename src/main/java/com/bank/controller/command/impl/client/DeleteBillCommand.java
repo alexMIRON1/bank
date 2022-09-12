@@ -24,11 +24,17 @@ public class DeleteBillCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Page page = (Page) request.getSession().getAttribute("page");
+        int noOfRecords = (int) request.getSession().getAttribute("noOfRecords");
         Integer billId = Integer.parseInt(request.getParameter("bill"));
         try {
             Bill bill = billsService.read(billId);
             Card card = billsService.fillCard(bill.getCard().getId());
             billsService.delete(bill.getId());
+            noOfRecords--;
+            if(noOfRecords % 3 == 0 && page.getNumber()-1!=0){
+                LOG.debug("Bill with id = " + billId + " was successfully delete");
+                return "redirect:/bank/payments?page=" + (page.getNumber()-1) + "&card=" + card.getId();
+            }
             LOG.debug("Bill with id = " + billId + " was successfully delete");
             return "redirect:/bank/payments?page=" + page.getNumber() + "&card=" + card.getId();
         } catch (DeleteBillException e) {

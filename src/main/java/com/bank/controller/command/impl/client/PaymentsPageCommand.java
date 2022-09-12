@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
-public class PaymentsPageCommand implements Command {
+public class PaymentsPageCommand implements Command{
+
     private static final Logger LOG = LogManager.getLogger(PaymentsPageCommand.class);
     private final PaymentsPageService paymentsPageService;
 
@@ -44,6 +45,7 @@ public class PaymentsPageCommand implements Command {
             int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
             request.getSession().setAttribute("page",page);
             request.getSession().setAttribute("noOfPages", noOfPages);
+            request.getSession().setAttribute("noOfRecords", noOfRecords);
             request.getSession().setAttribute("currentCard", card);
             request.getSession().setAttribute("bills", bills);
             LOG.debug("card was successfully read");

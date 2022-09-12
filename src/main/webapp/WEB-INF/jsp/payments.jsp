@@ -166,7 +166,7 @@
                     <input type="number" name="sum" id="sum" class="form-control" onkeyup="matchMakePayment(${currentCard.balance})" >
                     <span id="messagePayment"></span>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" id="button" class="btn btn-success"><fmt:message key="payments.form.button"/></button>
+                        <button type="submit" id="button" class="btn btn-success" onclick="matchMakePayment(${currentCard.balance})"><fmt:message key="payments.form.button"/></button>
                     </div>
                 </div>
             </form>

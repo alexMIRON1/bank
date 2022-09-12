@@ -46,7 +46,7 @@ public class GetReceiptCommand implements Command {
             return "/error.jsp";
         } catch (DocumentException | IOException e) {
             LOG.debug("Something wrong with data, password, email and etc.", e);
-            return "/error.jsp";
+            return "errors/wrongEmail.jsp";
         }
         return "/payments.jsp";
     }

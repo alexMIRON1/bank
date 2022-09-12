@@ -7,12 +7,12 @@
     <title><fmt:message key="error.title"/></title>
 </head>
 <body>
-<%@include  file="fragments/header.jspf" %>
+<%@include  file="../fragments/header.jspf" %>
 <br>
 
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="text-center">
-        <p class="fs-3"> <span class="text-danger"><fmt:message key="error.text.danger"/></span><fmt:message key="error.text"/></p>
+        <p class="fs-3"> <span class="text-danger"><fmt:message key="error.text.danger"/></span><fmt:message key="error.text.client.banned"/></p>
         <p class="lead">
             <fmt:message key="error.solution"/>
         </p>

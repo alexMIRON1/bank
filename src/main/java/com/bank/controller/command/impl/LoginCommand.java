@@ -50,7 +50,7 @@ public class LoginCommand implements Command {
         } catch (ClientBannedException e) {
             // client status is blocked
             LOG.debug("status is blocked");
-            return ERROR;
+            return "redirect:/bank/clientBanned";
         }
     }
 
