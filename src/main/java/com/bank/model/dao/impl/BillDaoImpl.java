@@ -24,7 +24,7 @@ public class BillDaoImpl implements BillDao {
     public Bill create(Bill bill) throws CreateBillException {
         try(Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_CREATE_BILL)) {
-            preparedStatement.setInt(1, bill.getSum());
+            preparedStatement.setBigDecimal(1, bill.getSum());
             preparedStatement.setInt(2, bill.getCard().getId());
             preparedStatement.setInt(3, bill.getBillStatus().getId());
             preparedStatement.setString(4, bill.getRecipient());
@@ -46,7 +46,7 @@ public class BillDaoImpl implements BillDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             bill.setId(resultSet.getInt(ConstantsDao.ID));
-            bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+            bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
             bill.setDate(resultSet.getDate(ConstantsDao.DATE));
             bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
             bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
@@ -97,7 +97,7 @@ public class BillDaoImpl implements BillDao {
             while (resultSet.next()) {
                 Bill bill = new Bill();
                 bill.setId(resultSet.getInt(ConstantsDao.ID));
-                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
                 bill.setDate(resultSet.getDate(ConstantsDao.DATE));
                 bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
@@ -127,7 +127,7 @@ public class BillDaoImpl implements BillDao {
             while (resultSet.next()){
                 Bill bill = new Bill();
                 bill.setId(resultSet.getInt(ConstantsDao.ID));
-                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
                 bill.setDate(resultSet.getDate(ConstantsDao.DATE));
                 bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
@@ -160,7 +160,7 @@ public class BillDaoImpl implements BillDao {
             while (resultSet.next()) {
                 Bill bill = new Bill();
                 bill.setId(resultSet.getInt(ConstantsDao.ID));
-                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
                 bill.setDate(resultSet.getDate(ConstantsDao.DATE));
                 bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
@@ -191,7 +191,7 @@ public class BillDaoImpl implements BillDao {
             while (resultSet.next()) {
                 Bill bill = new Bill();
                 bill.setId(resultSet.getInt(ConstantsDao.ID));
-                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
                 bill.setDate(resultSet.getDate(ConstantsDao.DATE));
                 bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));
@@ -222,7 +222,7 @@ public class BillDaoImpl implements BillDao {
             while (resultSet.next()) {
                 Bill bill = new Bill();
                 bill.setId(resultSet.getInt(ConstantsDao.ID));
-                bill.setSum(resultSet.getInt(ConstantsDao.SUM));
+                bill.setSum(resultSet.getBigDecimal(ConstantsDao.SUM));
                 bill.setDate(resultSet.getDate(ConstantsDao.DATE));
                 bill.setCard(new Card(resultSet.getInt(ConstantsDao.ID_CARD)));
                 bill.setBillStatus(BillStatus.getBillStatus(resultSet.getInt(ConstantsDao.BILL_STATUS_ID)));

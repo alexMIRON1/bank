@@ -23,6 +23,7 @@ public class DeleteBillCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
+
         Page page = (Page) request.getSession().getAttribute("page");
         int noOfRecords = (int) request.getSession().getAttribute("noOfRecords");
         Integer billId = Integer.parseInt(request.getParameter("bill"));

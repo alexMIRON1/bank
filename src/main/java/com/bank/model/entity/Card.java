@@ -1,9 +1,11 @@
 package com.bank.model.entity;
 
+import java.math.BigDecimal;
+
 public class Card {
     private Integer id;
     private String name;
-    private Integer balance;
+    private BigDecimal balance;
     private CardStatus cardStatus;
     private Client client;
     private String customName;
@@ -33,11 +35,11 @@ public class Card {
         this.name = name;
     }
 
-    public Integer getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Integer balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

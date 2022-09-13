@@ -35,7 +35,7 @@ function validateRegister(){
     return true;
 }
 function matchMakePayment(balance){
-    const sum = parseInt(document.getElementById('sum').value);
+    const sum = parseFloat(document.getElementById('sum').value);
     if( sum>0 && sum <= balance || document.getElementById('sum').value===""){
         document.getElementById('messagePayment').innerHTML = '';
         document.getElementById('button').disabled = false;
@@ -48,7 +48,7 @@ function matchMakePayment(balance){
     }
 }
 function matchTopUp(){
-    const sum = parseInt(document.getElementById('top-up').value);
+    const sum = parseFloat(document.getElementById('top-up').value);
     if(sum>0 && sum<=10000 || document.getElementById('top-up').value ===""){
         document.getElementById('messageTopUp').innerHTML = '';
         document.getElementById('button').disabled = false;

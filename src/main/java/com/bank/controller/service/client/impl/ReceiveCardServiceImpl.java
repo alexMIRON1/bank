@@ -10,6 +10,8 @@ import com.bank.model.exception.card.ReadCardException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
+
 
 public class ReceiveCardServiceImpl implements ReceiveCardService {
     private final CardDao cardDao;
@@ -27,7 +29,7 @@ public class ReceiveCardServiceImpl implements ReceiveCardService {
         }
         card.setName(generateName());
         card.setCustomName("default");
-        card.setBalance(100);
+        card.setBalance(BigDecimal.valueOf(100));
         card.setCardStatus(CardStatus.UNBLOCKED);
         card.setClient(client);
         cardDao.create(card);

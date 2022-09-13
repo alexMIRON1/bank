@@ -19,6 +19,8 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -56,7 +58,7 @@ public class BillDAOTest {
         connection.createStatement().executeUpdate(CREATE_TABLE_BILL);
         PreparedStatement preparedStatement = connection.prepareStatement(INSERT_DEFAULT_VALUE_BILL);
         bill = createBill();
-        preparedStatement.setInt(1,bill.getSum());
+        preparedStatement.setBigDecimal(1,bill.getSum());
         preparedStatement.setInt(2,bill.getCard().getId());
         preparedStatement.setInt(3,bill.getBillStatus().getId());
         preparedStatement.executeUpdate();
@@ -70,7 +72,7 @@ public class BillDAOTest {
     }
     @Test
     public void testCreate() throws CreateBillException {
-        bill.setSum(200);
+        bill.setSum(BigDecimal.valueOf(200));
         bill.setBillStatus(BillStatus.READY);
         bill.setRecipient("0000");
         Bill testBill = billDao.create(bill);
@@ -80,7 +82,7 @@ public class BillDAOTest {
         assertEquals(bill.getDate(),testBill.getDate());
         assertEquals(bill.getCard().getId(),testBill.getCard().getId());
     }
-    @Test(expected = NullPointerException.class)
+    @Test(expected = CreateBillException.class)
     public void testWrongDataCreate() throws CreateBillException {
         bill.setSum(null);
         billDao.create(bill);
@@ -128,7 +130,7 @@ public class BillDAOTest {
     @Test
     public void testGetBills() throws CreateBillException, SQLException, ReadBillException {
         bill.setBillStatus(BillStatus.PAID);
-        bill.setSum(500);
+        bill.setSum(BigDecimal.valueOf(500.11));
         bill.setId(2);
         bill.setRecipient("0000");
         billDao.create(bill);
@@ -152,7 +154,7 @@ public class BillDAOTest {
     @Test
     public void testGetBillsSortedById() throws ReadBillException, CreateBillException, SQLException {
         bill.setBillStatus(BillStatus.PAID);
-        bill.setSum(500);
+        bill.setSum(BigDecimal.valueOf(500.11));
         bill.setId(2);
         bill.setRecipient("0000");
         billDao.create(bill);
@@ -177,7 +179,7 @@ public class BillDAOTest {
     @Test
     public void testGetBillsSortedByDate() throws CreateBillException, SQLException, ReadBillException {
         bill.setBillStatus(BillStatus.PAID);
-        bill.setSum(500);
+        bill.setSum(BigDecimal.valueOf(500.11));
         bill.setId(2);
         bill.setRecipient("0000");
         billDao.create(bill);
@@ -202,7 +204,7 @@ public class BillDAOTest {
     @Test
     public void testGetBillsSortedByDateDesc() throws CreateBillException, SQLException, ReadBillException {
         bill.setBillStatus(BillStatus.PAID);
-        bill.setSum(500);
+        bill.setSum(BigDecimal.valueOf(500.11));
         bill.setId(2);
         bill.setRecipient("0000");
         billDao.create(bill);
@@ -221,14 +223,14 @@ public class BillDAOTest {
             assertEquals(bills.get(i).getBillStatus(),testBills.get(i).getBillStatus());
             assertEquals(bills.get(i).getDate().getDate(),testBills.get(i).getDate().getDate());
             assertEquals(bills.get(i).getCard().getId(),testBills.get(i).getCard().getId());
-            assertEquals(bills.get(i).getSum(),testBills.get(i).getSum());
+            assertEquals(bills.get(i).getSum(), testBills.get(i).getSum());
         }
     }
 
     private Bill createBill(){
         Bill creatingBill = new Bill();
         creatingBill.setId(1);
-        creatingBill.setSum(100);
+        creatingBill.setSum(BigDecimal.valueOf(500.11));
         creatingBill.setCard(new Card(1));
         creatingBill.setBillStatus(BillStatus.READY);
         return creatingBill;

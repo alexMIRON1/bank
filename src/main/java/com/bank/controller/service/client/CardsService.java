@@ -4,6 +4,8 @@ import com.bank.model.entity.Card;
 import com.bank.model.exception.card.ReadCardException;
 import com.bank.model.exception.card.UpdateCardException;
 
+import java.math.BigDecimal;
+
 public interface CardsService {
     /**
      * update status
@@ -26,7 +28,7 @@ public interface CardsService {
      * @param topUp sum of top-up
      * @throws UpdateCardException when wrong data for top-up
      */
-    void updateTopUp(Card card, Integer topUp) throws UpdateCardException;
+    void updateTopUp(Card card, BigDecimal topUp) throws UpdateCardException;
 
     /**
      * set custom name

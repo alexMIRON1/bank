@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CardsServiceTest {
@@ -27,7 +29,7 @@ public class CardsServiceTest {
         System.out.println(card.getBalance());
         cardsService = new CardsServiceImpl(cardDao);
         Mockito.when(cardDao.read(card.getId())).thenReturn(card);
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200));
     }
     @Test
     public void testUpdateStatus() throws UpdateCardException {
@@ -59,14 +61,9 @@ public class CardsServiceTest {
     @Test
     public void testUpdateTopUp() throws UpdateCardException {
         Card testCard = Entity.createCard();
-        cardsService.updateTopUp(testCard,100);
-        card.setBalance(card.getBalance()+100);
+        cardsService.updateTopUp(testCard,BigDecimal.valueOf(100));
+        card.setBalance(card.getBalance().add(BigDecimal.valueOf(100)));
         assertEquals(card.getBalance(),testCard.getBalance());
-    }
-    @Test(expected = UpdateCardException.class)
-    public void testWrongUpdateTopUp() throws UpdateCardException {
-        Card testCard = card;
-        cardsService.updateTopUp(testCard,Integer.MAX_VALUE);
     }
     @Test
     public void testUpdateCustomName() throws UpdateCardException {

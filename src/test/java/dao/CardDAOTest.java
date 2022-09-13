@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -63,7 +64,7 @@ public class CardDAOTest {
         PreparedStatement preparedStatement =  connection.prepareStatement(INSERT_DEFAULT_VALUE);
         card = createCard();
         preparedStatement.setString(1, card.getName());
-        preparedStatement.setInt(2, card.getBalance());
+        preparedStatement.setBigDecimal(2, card.getBalance());
         preparedStatement.setInt(3,card.getCardStatus().getId());
         preparedStatement.setInt(4,card.getClient().getId());
         preparedStatement.setString(5,card.getCustomName());
@@ -87,7 +88,7 @@ public class CardDAOTest {
     @Test
     public void testCreate() throws CreateCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200.11));
         card.setCustomName("Wife's card");
         Card testCard = cardDao.create(card);
         assertEquals(card.getName(),testCard.getName());
@@ -115,7 +116,7 @@ public class CardDAOTest {
     @Test
     public void testUpdate() throws UpdateCardException {
         card.setCardStatus(CardStatus.BLOCKED);
-        card.setBalance(500);
+        card.setBalance(BigDecimal.valueOf(500));
         card.setCustomName("Hobby card");
         Card testCard = cardDao.update(card);
         assertEquals(card.getName(),testCard.getName());
@@ -130,7 +131,7 @@ public class CardDAOTest {
     }
     @Test
     public void testTransferCard() throws UpdateCardException {
-        card.setBalance(50);
+        card.setBalance(BigDecimal.valueOf(50));
         Card cardTo = new Card(2);
         cardTo.setBalance(card.getBalance());
         cardTo.setCardStatus(CardStatus.UNBLOCKED);
@@ -144,7 +145,7 @@ public class CardDAOTest {
     @Test
     public void testGetCards() throws CreateCardException, ReadCardException, SQLException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200.11));
         card.setCustomName("Wife's card");
         card.setId(2);
         cardDao.create(card);
@@ -167,7 +168,7 @@ public class CardDAOTest {
     @Test
     public void testGetCardsSortById() throws CreateCardException, SQLException, ReadCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200));
         card.setCustomName("Wife's card");
         card.setId(2);
         cardDao.create(card);
@@ -191,7 +192,7 @@ public class CardDAOTest {
     @Test
     public void testGetCardsSortedByName() throws CreateCardException, SQLException, ReadCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200));
         card.setCustomName("Wife's card");
         card.setId(2);
         cardDao.create(card);
@@ -215,7 +216,7 @@ public class CardDAOTest {
     @Test
     public void testGetCardsSortedByBalance() throws CreateCardException, SQLException, ReadCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200.11));
         card.setCustomName("Wife's card");
         card.setId(2);
         cardDao.create(card);
@@ -239,7 +240,7 @@ public class CardDAOTest {
     @Test
     public void testGetLastCardName() throws CreateCardException, SQLException, ReadCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200.11));
         card.setCustomName("Wife's card");
         card.setId(2);
         cardDao.create(card);
@@ -250,7 +251,7 @@ public class CardDAOTest {
     @Test
     public void testGetCardsToUnBlock() throws CreateCardException, SQLException, ReadCardException {
         card.setName("0002");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200.11));
         card.setCustomName("Wife's card");
         card.setId(2);
         card.setCardStatus(CardStatus.READY_TO_UNBLOCK);
@@ -272,7 +273,7 @@ public class CardDAOTest {
         Card creatingCard = new Card();
         creatingCard.setId(1);
         creatingCard.setName("0001");
-        creatingCard.setBalance(100);
+        creatingCard.setBalance(BigDecimal.valueOf(100.11));
         creatingCard.setCardStatus(CardStatus.UNBLOCKED);
         creatingCard.setClient(createClient());
         creatingCard.setCustomName("My card");

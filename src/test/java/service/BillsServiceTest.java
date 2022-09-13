@@ -23,6 +23,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -68,11 +69,11 @@ public class BillsServiceTest {
         Card testCard = Entity.createCard();
         Card toCard = Entity.createCard();
         Card testToCard = Entity.createCard();
-        toCard.setBalance(10);
-        testToCard.setBalance(10);
+        toCard.setBalance(BigDecimal.valueOf(10));
+        testToCard.setBalance(BigDecimal.valueOf(10));
         billsService.updateCard(testCard,toCard,bill);
-        card.setBalance(card.getBalance()-bill.getSum());
-        testToCard.setBalance(testToCard.getBalance()+bill.getSum());
+        card.setBalance(card.getBalance().subtract(bill.getSum()));
+        testToCard.setBalance(testToCard.getBalance().add(bill.getSum()));
         assertEquals(testCard.getBalance(),card.getBalance());
         assertEquals(toCard.getBalance(),testToCard.getBalance());
     }
@@ -91,7 +92,7 @@ public class BillsServiceTest {
     @Test(expected = NotEnoughException.class)
     public void testNotEnoughUpdateCard() throws UpdateCardException, NotEnoughException {
         Bill testBill = Entity.createBill();
-        testBill.setSum(400);
+        testBill.setSum(BigDecimal.valueOf(400));
         billsService.updateCard(card,new Card(),testBill);
     }
     @Test

@@ -5,6 +5,8 @@ import com.bank.model.entity.Bill;
 import com.bank.model.entity.Card;
 import com.bank.model.exception.bill.CreateBillException;
 
+import java.math.BigDecimal;
+
 public interface MakePaymentService{
     /**
      * create bill
@@ -15,5 +17,5 @@ public interface MakePaymentService{
      * @throws CreateBillException when wrong data for creating bill
      * @throws CardBannedException when card is banned
      */
-    Bill create(Bill bill, Integer sum, Card card) throws CreateBillException, CardBannedException;
+    Bill create(Bill bill, BigDecimal sum, Card card) throws CreateBillException, CardBannedException;
 }

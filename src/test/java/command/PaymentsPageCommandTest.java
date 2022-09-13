@@ -15,6 +15,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,7 +45,7 @@ public class PaymentsPageCommandTest {
         Card creatingCard = new Card();
         creatingCard.setId(1);
         creatingCard.setName("0001");
-        creatingCard.setBalance(100);
+        creatingCard.setBalance(BigDecimal.valueOf(100));
         creatingCard.setCardStatus(CardStatus.UNBLOCKED);
         creatingCard.setClient(new Client(1));
         creatingCard.setCustomName("My card");

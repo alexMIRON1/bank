@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 
 public class TopUpCommand implements Command {
     private final CardsService cardsService;
@@ -23,11 +24,11 @@ public class TopUpCommand implements Command {
     public String execute(HttpServletRequest request) {
         Integer cardId = Integer.parseInt(request.getParameter("card"));
         Page page = (Page) request.getSession().getAttribute("page");
-        int topUp;
+        BigDecimal topUp;
         if(request.getParameter("top-up").equals("")){
-            topUp = 0;
+            topUp = BigDecimal.valueOf(0);
         }else{
-            topUp = Integer.parseInt(request.getParameter("top-up"));
+            topUp = BigDecimal.valueOf(Double.parseDouble(request.getParameter("top-up")));
         }
         try {
             Card card = cardsService.read(cardId);

@@ -2,6 +2,7 @@ package service;
 
 import com.bank.model.entity.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,11 +29,11 @@ public class Entity {
         cards.add(createCard());
         Card card2 = createCard();
         card2.setId(2);
-        card2.setBalance(200);
+        card2.setBalance(BigDecimal.valueOf(200));
         card2.setName("00002");
         Card card3 = createCard();
         card2.setId(3);
-        card2.setBalance(300);
+        card2.setBalance(BigDecimal.valueOf(300));
         card2.setName("00003");
         cards.add(card2);
         cards.add(card3);
@@ -42,11 +43,11 @@ public class Entity {
         Bill bill2 =createBill();
         bill2.setId(2);
         bill2.setBillStatus(BillStatus.PAID);
-        bill2.setSum(10);
+        bill2.setSum(BigDecimal.valueOf(10));
         Bill bill3 = createBill();
         bill3.setId(3);
         bill3.setBillStatus(BillStatus.READY);
-        bill3.setSum(10);
+        bill3.setSum(BigDecimal.valueOf(10));
         bills.add(bill2);
         bills.add(bill3);
     }
@@ -63,7 +64,7 @@ public class Entity {
         card.setCardStatus(CardStatus.UNBLOCKED);
         card.setName("00001");
         card.setCustomName("my card");
-        card.setBalance(200);
+        card.setBalance(BigDecimal.valueOf(200));
         card.setClient(createClient());
         return card;
     }
@@ -72,7 +73,7 @@ public class Entity {
         bill.setCard(createCard());
         bill.setBillStatus(BillStatus.READY);
         bill.setDate(new Date());
-        bill.setSum(50);
+        bill.setSum(BigDecimal.valueOf(50));
         return bill;
     }
     public static Client getClient(Integer id){

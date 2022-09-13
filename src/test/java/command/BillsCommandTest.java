@@ -17,6 +17,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner
@@ -28,19 +30,23 @@ public class BillsCommandTest {
     private BillsService billsService;
     @Mock
     private HttpSession session;
+    Page page ;
     @Before
     public void setUp() throws ReadCardException, ReadBillException {
         Mockito.when(request.getSession()).thenReturn(session);
         Mockito.when(request.getParameter(Mockito.anyString())).thenReturn("1");
-        Mockito.when(session.getAttribute(Mockito.anyString())).thenReturn(new Page());
+         page = new Page();
+        Mockito.when(session.getAttribute("page")).thenReturn(page);
+        Mockito.when(session.getAttribute("noOfRecords")).thenReturn(1);
         Mockito.when(billsService.read(createBill().getId())).thenReturn(createBill());
         Mockito.when(billsService.fillCard(createBill().getCard().getId())).thenReturn(new Card(1));
     }
     @Test
     public void testDeleteBillExecute(){
         DeleteBillCommand deleteBillCommand = new DeleteBillCommand(billsService);
+        page.setNumberPage(1);
         String path = deleteBillCommand.execute(request);
-        assertEquals("redirect:/bank/payments?page=" + new Page().getNumber() + "&card=" + new Card(1).getId(),path);
+        assertEquals("redirect:/bank/payments?page=" + page.getNumber() + "&card=" + new Card(1).getId(),path);
 
     }
     @Test
@@ -52,7 +58,7 @@ public class BillsCommandTest {
     private Bill createBill(){
         Bill creatingBill = new Bill();
         creatingBill.setId(1);
-        creatingBill.setSum(100);
+        creatingBill.setSum(BigDecimal.valueOf(100));
         creatingBill.setCard(new Card(1));
         creatingBill.setBillStatus(BillStatus.READY);
         return creatingBill;

@@ -163,7 +163,7 @@
             <form action="../bank/make-payment" method="get">
                 <div class="mb-3">
                     <label for="sum" class="form-label"><fmt:message key="payments.form.title"/></label>
-                    <input type="number" name="sum" id="sum" class="form-control" onkeyup="matchMakePayment(${currentCard.balance})" >
+                    <input type="number" step="0.01" name="sum" id="sum" class="form-control" onkeyup="matchMakePayment(${currentCard.balance})" >
                     <span id="messagePayment"></span>
                     <div class="d-flex justify-content-center">
                         <button type="submit" id="button" class="btn btn-success" onclick="matchMakePayment(${currentCard.balance})"><fmt:message key="payments.form.button"/></button>

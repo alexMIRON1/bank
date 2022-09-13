@@ -24,7 +24,7 @@ public class CardDaoImpl implements CardDao {
         try(Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_CREATE_CARD)) {
             preparedStatement.setString(1, card.getName());
-            preparedStatement.setInt(2, card.getBalance());
+            preparedStatement.setBigDecimal(2,card.getBalance());
             preparedStatement.setInt(3, card.getCardStatus().getId());
             preparedStatement.setInt(4, card.getClient().getId());
             preparedStatement.setString(5,card.getCustomName());
@@ -47,7 +47,7 @@ public class CardDaoImpl implements CardDao {
             resultSet.next();
             card.setId(resultSet.getInt(ConstantsDao.ID));
             card.setName(resultSet.getString(ConstantsDao.NAME));
-            card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+            card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
             card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
             card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
             card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -61,7 +61,7 @@ public class CardDaoImpl implements CardDao {
     public Card update(Card card) throws UpdateCardException{
         try(Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD)) {
-            preparedStatement.setInt(1, card.getBalance());
+            preparedStatement.setBigDecimal(1, card.getBalance());
             preparedStatement.setInt(2, card.getCardStatus().getId());
             preparedStatement.setString(3, card.getCustomName());
             preparedStatement.setInt(4, card.getId());
@@ -80,13 +80,13 @@ public class CardDaoImpl implements CardDao {
             List<Card> cards = new ArrayList<>();
             try(PreparedStatement preparedStatementFrom = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD);
                 PreparedStatement preparedStatementTo = connection.prepareStatement(ConstantsDao.QUERY_UPDATE_CARD)){
-                preparedStatementFrom.setInt(1,from.getBalance());
+                preparedStatementFrom.setBigDecimal(1,from.getBalance());
                 preparedStatementFrom.setInt(2,from.getCardStatus().getId());
                 preparedStatementFrom.setString(3,from.getCustomName());
                 preparedStatementFrom.setInt(4,from.getId());
                 preparedStatementFrom.executeUpdate();
 
-                preparedStatementTo.setInt(1,to.getBalance());
+                preparedStatementTo.setBigDecimal(1,to.getBalance());
                 preparedStatementTo.setInt(2,to.getCardStatus().getId());
                 preparedStatementTo.setString(3,to.getCustomName());
                 preparedStatementTo.setInt(4,to.getId());
@@ -121,7 +121,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -145,7 +145,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -180,7 +180,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -210,7 +210,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -240,7 +240,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));
@@ -281,7 +281,7 @@ public class CardDaoImpl implements CardDao {
                 Card card = new Card();
                 card.setId(resultSet.getInt(ConstantsDao.ID));
                 card.setName(resultSet.getString(ConstantsDao.NAME));
-                card.setBalance(resultSet.getInt(ConstantsDao.BALANCE));
+                card.setBalance(resultSet.getBigDecimal(ConstantsDao.BALANCE));
                 card.setCardStatus(CardStatus.getCardStatus(resultSet.getInt(ConstantsDao.CARD_STATUS_ID)));
                 card.setClient(new Client(resultSet.getInt(ConstantsDao.CLIENT_ID)));
                 card.setCustomName(resultSet.getString(ConstantsDao.NAME_CUSTOM));

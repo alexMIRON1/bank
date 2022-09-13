@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 
 public class MakePaymentCommand implements Command {
     private final MakePaymentService makePaymentService;
@@ -21,11 +22,11 @@ public class MakePaymentCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Page page = (Page)request.getSession().getAttribute("page");
-        int sum;
+        BigDecimal sum;
         if(request.getParameter("sum").equals("")){
-            sum = 0;
+            sum = BigDecimal.ZERO;
         }else {
-            sum = Integer.parseInt(request.getParameter("sum"));
+            sum = BigDecimal.valueOf(Double.parseDouble(request.getParameter("sum")));
         }
         Card card = (Card) request.getSession().getAttribute("currentCard");
         try {

@@ -46,7 +46,7 @@
                                     <div class="modal-body">
                                         <form action="../bank/top-up" method="post">
                                             <input type="text" value="${card.id}" name="card" hidden>
-                                            <input type="number" name="top-up" id="top-up" onkeyup="matchTopUp()">
+                                            <input type="number" step="0.01" name="top-up" id="top-up" onkeyup="matchTopUp()">
                                             <button type="submit" id="button" class="btn btn-success"><fmt:message key="home.modal.top-up.button"/></button><br>
                                             <label class="form-label" for="top-up"><fmt:message key="home.modal.top-up.label"/></label>
                                             <span id="messageTopUp"></span>

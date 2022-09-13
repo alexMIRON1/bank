@@ -9,6 +9,8 @@ import com.bank.model.exception.card.UpdateCardException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
+
 
 public class CardsServiceImpl implements CardsService {
     private final CardDao cardDao;
@@ -41,12 +43,12 @@ public class CardsServiceImpl implements CardsService {
     }
 
     @Override
-    public void updateTopUp(Card card, Integer topUp) throws UpdateCardException {
-        if(card.getBalance()+topUp<0){
+    public void updateTopUp(Card card, BigDecimal topUp) throws UpdateCardException {
+        if(card.getBalance().add(topUp).compareTo(BigDecimal.valueOf(0))<0){
             LOG.debug("you reached max value in your account");
             throw new UpdateCardException();
         }
-        card.setBalance(card.getBalance()+topUp);
+        card.setBalance(card.getBalance().add(topUp));
         cardDao.update(card);
     }
 

@@ -14,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.math.BigDecimal;
+
 import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MakePaymentServiceTest {
@@ -32,7 +35,7 @@ public class MakePaymentServiceTest {
     }
     @Test
     public void testCreate() throws CardBannedException, CreateBillException {
-        Bill testBill = makePaymentService.create(bill,100,card);
+        Bill testBill = makePaymentService.create(bill, BigDecimal.valueOf(100),card);
         assertEquals(bill.getId(),testBill.getId());
         assertEquals(bill.getBillStatus().getId(),testBill.getBillStatus().getId());
         assertEquals(bill.getDate(),testBill.getDate());
@@ -45,11 +48,11 @@ public class MakePaymentServiceTest {
         Card testCard =Entity.createCard();
         testCard.setCardStatus(CardStatus.BLOCKED);
         testBill.setCard(testCard);
-        makePaymentService.create(testBill,100,testCard);
+        makePaymentService.create(testBill,BigDecimal.valueOf(100),testCard);
 
     }
     @Test(expected = CreateBillException.class)
     public void testCreateBillCreate() throws CardBannedException, CreateBillException {
-        makePaymentService.create(bill,0,card);
+        makePaymentService.create(bill,BigDecimal.ZERO,card);
     }
 }

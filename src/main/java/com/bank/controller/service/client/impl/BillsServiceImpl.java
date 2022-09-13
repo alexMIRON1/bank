@@ -17,6 +17,7 @@ import com.bank.model.exception.card.UpdateCardException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class BillsServiceImpl implements BillsService {
 
     @Override
     public void updateCard(Card card, Card cardTo, Bill bill) throws UpdateCardException, NotEnoughException{
-        if(card.getBalance() - bill.getSum()<0){
+        if(card.getBalance().subtract(bill.getSum()).compareTo(BigDecimal.ZERO)<0){
             LOG.debug("not enough money");
             throw new NotEnoughException();
         }
@@ -49,12 +50,12 @@ public class BillsServiceImpl implements BillsService {
             LOG.debug("card or bill do not exist");
             throw new UpdateCardException();
         }
-        card.setBalance(card.getBalance() - bill.getSum());
-        if(cardTo.getBalance()+bill.getSum()<0){
+        card.setBalance(card.getBalance().subtract(bill.getSum()));
+        if(cardTo.getBalance().add(bill.getSum()).compareTo(BigDecimal.ZERO)<0){
             LOG.debug("reached max value on card recipient");
             throw new UpdateCardException();
         }
-        cardTo.setBalance(cardTo.getBalance() + bill.getSum());
+        cardTo.setBalance(cardTo.getBalance().add(bill.getSum()));
         cardDao.transferCard(card,cardTo);
     }
 

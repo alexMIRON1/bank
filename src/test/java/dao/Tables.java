@@ -41,7 +41,7 @@ public class Tables {
     public static final String CREATE_TABLE_CARD = "CREATE TABLE IF NOT EXISTS `testDB`.`card` (\n" +
             "                                             `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
             "                                             `name` VARCHAR(255) NOT NULL,\n" +
-            "    `balance` INT NOT NULL,\n" +
+            "    `balance` DECIMAL(12,2) NOT NULL,\n" +
             "    `card_status_id` INT UNSIGNED NOT NULL,\n" +
             "    `client_id` INT UNSIGNED NOT NULL,\n" +
             "    `name_custom` VARCHAR(255) NOT NULL,\n" +
@@ -68,7 +68,7 @@ public class Tables {
             "    DEFAULT CHARACTER SET = utf8;";
     public static final String  CREATE_TABLE_BILL = "CREATE TABLE IF NOT EXISTS `testDB`.`bill` (\n" +
             "                                             `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
-            "                                             `sum` INT NOT NULL,\n" +
+            "                                             `sum` DECIMAL(12,2) NOT NULL,\n" +
             "                                             `date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "                                             `card_id` INT UNSIGNED NOT NULL,\n" +
             "                                             `bill_status_id` INT UNSIGNED NOT NULL,\n" +

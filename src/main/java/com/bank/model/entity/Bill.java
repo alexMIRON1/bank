@@ -1,10 +1,11 @@
 package com.bank.model.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Bill {
     private Integer id;
-    private Integer sum;
+    private BigDecimal sum;
     private Date date;
     private Card card;
     private String recipient;
@@ -26,11 +27,11 @@ public class Bill {
         this.id = id;
     }
 
-    public Integer getSum() {
+    public BigDecimal getSum() {
         return sum;
     }
 
-    public void setSum(Integer sum) {
+    public void setSum(BigDecimal sum) {
         this.sum = sum;
     }
 

@@ -11,6 +11,8 @@ import com.bank.model.exception.bill.CreateBillException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
+
 public class MakePaymentServiceImpl implements MakePaymentService {
     private static final Logger LOG = LogManager.getLogger(MakePaymentServiceImpl.class);
     private final BillDao billDao;
@@ -20,12 +22,12 @@ public class MakePaymentServiceImpl implements MakePaymentService {
     }
 
     @Override
-    public Bill create(Bill bill, Integer sum, Card card) throws CreateBillException , CardBannedException {
+    public Bill create(Bill bill, BigDecimal sum, Card card) throws CreateBillException , CardBannedException {
         if(card.getCardStatus().equals(CardStatus.BLOCKED) || card.getCardStatus().equals(CardStatus.READY_TO_UNBLOCK)){
             LOG.debug("card is banned");
             throw new CardBannedException();
         }
-        if(sum == 0){
+        if(sum.compareTo(BigDecimal.ZERO)==0){
             LOG.debug("sum payment was null");
             throw new CreateBillException();
         }

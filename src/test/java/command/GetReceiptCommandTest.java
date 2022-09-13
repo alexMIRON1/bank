@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
@@ -56,7 +57,7 @@ public class GetReceiptCommandTest {
     private Bill createBill(){
         Bill creatingBill = new Bill();
         creatingBill.setId(1);
-        creatingBill.setSum(100);
+        creatingBill.setSum(BigDecimal.valueOf(100));
         creatingBill.setCard(new Card(1));
         creatingBill.setBillStatus(BillStatus.READY);
         return creatingBill;
