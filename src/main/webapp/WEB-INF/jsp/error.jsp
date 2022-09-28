@@ -7,7 +7,7 @@
     <title><fmt:message key="error.title"/></title>
 </head>
 <body>
-<%@include  file="../fragments/header.jspf" %>
+<%@include  file="fragments/header.jspf" %>
 <br>
 
 <div class="d-flex align-items-center justify-content-center vh-100">
@@ -16,7 +16,7 @@
         <p class="lead">
             <fmt:message key="error.solution"/>
         </p>
-        <button type="button" class="btn btn-success" onclick="window.location = 'logout'"><fmt:message key="error.button.solution"/></button>
+        <button type="button" class="btn btn-success" onclick="window.location = 'login'"><fmt:message key="error.button.solution"/></button>
     </div>
 </div>
 <br>

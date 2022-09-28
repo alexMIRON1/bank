@@ -13,7 +13,7 @@
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="text-center">
         <p class="fs-3"> <span class="text-danger"><fmt:message key="error.text.danger"/></span><fmt:message key="error.text.not.card"/></p>
-        <button type="button" class="btn btn-success" onclick="window.location.href = '../bank/home/payments'"><fmt:message key="error.text.back"/></button>
+        <button type="button" class="btn btn-success" onclick="window.location.href = '../bank/payments?card=${currentCard.id}'"><fmt:message key="error.text.back"/></button>
     </div>
 </div>
 <br>

@@ -28,9 +28,13 @@ public class PayBillCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Page page = (Page) request.getSession().getAttribute("page");
-        Integer billId = Integer.parseInt(request.getParameter("bill"));
+        int billId = 0;
+        int idCard = 0;
         String idToCard = request.getParameter("toCard");
-        Integer idCard = Integer.parseInt(idToCard);
+        if(request.getParameter("bill")!=null || idToCard!=null){
+             billId = Integer.parseInt(request.getParameter("bill"));
+             idCard = Integer.parseInt(idToCard);
+        }
         try {
             Bill bill = billsService.read(billId);
             Card card = billsService.fillCard(bill.getCard().getId());
@@ -59,7 +63,7 @@ public class PayBillCommand implements Command {
         } catch (NotEnoughException e) {
             //watch BillsServiceImpl that get problem
             LOG.debug("fail to obtain bill--> not enough money on bill" + billId);
-            return ERROR;
+            return "/errors/cardNotExist.jsp";
         }
     }
 

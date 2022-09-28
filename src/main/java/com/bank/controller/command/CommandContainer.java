@@ -27,8 +27,9 @@ public class CommandContainer {
     }
 
     public Command getCommand(String path) {
-        if(!commands.containsKey(path))
-            return commands.get("/login");
+        if(!commands.containsKey(path)){
+            return commands.get("/error");
+        }
         return commands.get(path);
     }
 }

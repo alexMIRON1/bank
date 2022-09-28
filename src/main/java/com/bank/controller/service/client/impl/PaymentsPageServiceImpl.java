@@ -31,7 +31,7 @@ public class PaymentsPageServiceImpl implements PaymentsPageService {
     @Override
     public Card read(Integer id) throws ReadCardException{
         if(id == 0){
-            LOG.debug("card with id " + id  + "does not exist");
+            LOG.debug("card with this id " + id  + "does not exist");
             throw new ReadCardException();
         }
         return cardDao.read(id);
